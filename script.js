@@ -22,7 +22,6 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             await supabase.from('users').insert([{ name, email }]);
             message.textContent = '✅ Registrierung erfolgreich! Bitte E-Mail bestätigen.';
             message.style.color = 'lightgreen';
-            document.getElementById('registerModal').style.display = 'none'; // Schließt das Popup
         }
     }
 
@@ -57,15 +56,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         }
     }
 
-    // Popup-Handling
-    document.getElementById('registerOpenBtn').addEventListener('click', () => {
-        document.getElementById('registerModal').style.display = 'block';
-    });
-
-    document.querySelector('.close').addEventListener('click', () => {
-        document.getElementById('registerModal').style.display = 'none';
-    });
-
+    // Event Listener für Buttons hinzufügen
     document.getElementById('registerBtn').addEventListener('click', register);
     document.getElementById('loginBtn').addEventListener('click', login);
     document.getElementById('logoutBtn').addEventListener('click', logout);
