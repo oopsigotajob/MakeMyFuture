@@ -1,6 +1,6 @@
 // Supabase initialisieren
-const supabaseUrl = 'https://YOUR_PROJECT_ID.supabase.co';
-const supabaseKey = 'YOUR_ANON_KEY';
+const supabaseUrl = 'https://vedcigedhjkarkcbqvtf.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZGNpZ2VkaGprYXJrY2JxdnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMjI3NjUsImV4cCI6MjA2Mjc5ODc2NX0.Q7By1dg4FFZrA6UPWYVGHJinydzltjlpW3riruZTPXA';
 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 async function login() {
