@@ -1,20 +1,28 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MakeMyFuture Login</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MakeMyFuture | Login</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script defer src="script.js"></script>
 </head>
 <body>
   <div class="container">
-    <img src="logo.png" alt="Logo" class="logo">
+    <img src="logo.png" alt="Logo" class="logo" />
 
-    <h2>Login</h2>
-    <input type="email" id="email" placeholder="E-Mail eingeben" required>
-    <input type="password" id="password" placeholder="Passwort eingeben" required>
-    <button onclick="login()">Einloggen</button>
+    <h2>Willkommen bei MakeMyFuture</h2>
+
+    <input type="email" id="email" placeholder="E-Mail eingeben" required />
+    <input type="password" id="password" placeholder="Passwort eingeben" required />
+
+    <div class="button-group">
+      <button onclick="login()">Einloggen</button>
+      <button onclick="register()">Registrieren</button>
+      <button onclick="logout()">Logout</button>
+    </div>
 
     <p id="message"></p>
   </div>
