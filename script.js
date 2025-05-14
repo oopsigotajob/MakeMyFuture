@@ -1,7 +1,7 @@
 // Supabase initialisieren
-const supabaseUrl = 'https://vedcigedhjkarkcbqvtf.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZGNpZ2VkaGprYXJrY2JxdnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMjI3NjUsImV4cCI6MjA2Mjc5ODc2NX0.Q7By1dg4FFZrA6UPWYVGHJinydzltjlpW3riruZTPXA';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+const SUPABASE_URL = 'https://vedcigedhjkarkcbqvtf.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZGNpZ2VkaGprYXJrY2JxdnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMjI3NjUsImV4cCI6MjA2Mjc5ODc2NX0.Q7By1dg4FFZrA6UPWYVGHJinydzltjlpW3riruZTPXA';
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Login
 async function login() {
@@ -15,10 +15,10 @@ async function login() {
   });
 
   if (error) {
-    message.textContent = '❌ Fehler beim Login: ' + error.message;
+    message.textContent = '❌ Login-Fehler: ' + error.message;
     message.style.color = 'red';
   } else {
-    message.textContent = '✅ Eingeloggt als: ' + data.user.email;
+    message.textContent = '✅ Eingeloggt: ' + data.user.email;
     message.style.color = 'lightgreen';
   }
 }
@@ -35,16 +35,11 @@ async function register() {
   });
 
   if (error) {
-    message.textContent = '❌ Registrierung fehlgeschlagen: ' + error.message;
+    message.textContent = '❌ Registrierungsfehler: ' + error.message;
     message.style.color = 'red';
   } else {
-    message.textContent = '✅ Registrierung erfolgreich. Bestätige deine E-Mail.';
+    message.textContent = '✅ Registrierung erfolgreich. E-Mail bestätigen!';
     message.style.color = 'lightgreen';
-
-    // optional: Profil anlegen
-    await supabase.from('profiles').insert([
-      { id: data.user.id, full_name: '' }
-    ]);
   }
 }
 
@@ -54,10 +49,10 @@ async function logout() {
   const message = document.getElementById('message');
 
   if (error) {
-    message.textContent = '❌ Logout fehlgeschlagen';
+    message.textContent = '❌ Logout fehlgeschlagen.';
     message.style.color = 'red';
   } else {
-    message.textContent = '👋 Erfolgreich ausgeloggt';
+    message.textContent = '👋 Abgemeldet.';
     message.style.color = 'white';
   }
 }
