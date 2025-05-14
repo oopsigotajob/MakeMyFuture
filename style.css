@@ -1,4 +1,3 @@
-/* Grund-Layout */
 body {
   margin: 0;
   padding: 0;
@@ -11,7 +10,6 @@ body {
   color: white;
 }
 
-/* Container */
 .container {
   background-color: #1e3a5f;
   padding: 2rem;
@@ -22,13 +20,11 @@ body {
   text-align: center;
 }
 
-/* Logo */
 .logo {
   width: 80px;
   margin-bottom: 1rem;
 }
 
-/* Eingabefelder */
 input {
   width: 100%;
   padding: 0.75rem;
@@ -38,7 +34,6 @@ input {
   font-size: 1rem;
 }
 
-/* Buttons */
 .button-group button {
   width: 100%;
   padding: 0.75rem;
@@ -57,7 +52,6 @@ input {
   background-color: #ea580c;
 }
 
-/* Nachricht */
 #message {
   margin-top: 1rem;
   font-size: 0.9rem;
