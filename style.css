@@ -1,33 +1,3 @@
-/* Allgemeine Seiteneinstellungen */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #081a33; /* Dunkleres Blau für besseren Kontrast */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    color: white;
-}
-
-/* Hauptcontainer */
-.container {
-    background-color: #152c4f; /* Tieferes Blau für modernen Look */
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-}
-
-/* Logo */
-.logo {
-    width: 80px;
-    margin-bottom: 1rem;
-}
-
 /* Eingabefelder */
 input {
     width: 100%;
@@ -40,23 +10,9 @@ input {
     color: #333;
 }
 
-/* Button-Styling */
-.button-group button {
-    width: 100%;
-    padding: 0.75rem;
-    margin-top: 0.5rem;
-    background-color: #ff8c42; /* Wärmerer Farbton für bessere Sichtbarkeit */
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
+/* Nachricht (Statusmeldungen) */
+#message {
+    margin-top: 1rem;
     font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+    font-weight: bold;
 }
-
-.button-group button:hover {
-    background-color: #e67e30; /* Dunklere Version für Hover-Effekt */
-}
-
-/* Nachricht (Statusmeldungen
