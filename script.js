@@ -8,8 +8,8 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
     // Registrierung mit Name speichern
     async function register() {
         const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+        const email = document.getElementById('registerEmail').value;
+        const password = document.getElementById('registerPassword').value;
         const message = document.getElementById('message');
 
         const { data, error } = await supabase.auth.signUp({ email, password });
@@ -22,6 +22,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
             await supabase.from('users').insert([{ name, email }]);
             message.textContent = '✅ Registrierung erfolgreich! Bitte E-Mail bestätigen.';
             message.style.color = 'lightgreen';
+            document.getElementById('registerModal').style.display = 'none'; // Schließt das Popup
         }
     }
 
@@ -56,7 +57,15 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
         }
     }
 
-    // Event Listener hinzufügen
+    // Popup-Handling
+    document.getElementById('registerOpenBtn').addEventListener('click', () => {
+        document.getElementById('registerModal').style.display = 'block';
+    });
+
+    document.querySelector('.close').addEventListener('click', () => {
+        document.getElementById('registerModal').style.display = 'none';
+    });
+
     document.getElementById('registerBtn').addEventListener('click', register);
     document.getElementById('loginBtn').addEventListener('click', login);
     document.getElementById('logoutBtn').addEventListener('click', logout);
