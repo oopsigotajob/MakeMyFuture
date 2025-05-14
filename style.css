@@ -1,52 +1,63 @@
+/* Grund-Layout */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
   background-color: #0a2540;
-  color: white;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  color: white;
 }
 
+/* Container */
 .container {
   background-color: #1e3a5f;
   padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 400px;
   text-align: center;
-  width: 300px;
 }
 
+/* Logo */
 .logo {
   width: 80px;
   margin-bottom: 1rem;
 }
 
+/* Eingabefelder */
 input {
-  display: block;
   width: 100%;
-  padding: 0.7rem;
+  padding: 0.75rem;
   margin: 0.5rem 0;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
+  font-size: 1rem;
 }
 
-button {
+/* Buttons */
+.button-group button {
   width: 100%;
-  padding: 0.7rem;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
   background-color: #f97316;
-  border: none;
-  border-radius: 5px;
   color: white;
+  border: none;
+  border-radius: 6px;
   font-weight: bold;
+  font-size: 1rem;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-button:hover {
+.button-group button:hover {
   background-color: #ea580c;
 }
 
+/* Nachricht */
 #message {
   margin-top: 1rem;
   font-size: 0.9rem;
