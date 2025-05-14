@@ -1,33 +1,5 @@
-/* Registrierung Popup */
-.modal {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #1c2b4b;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    width: 90%;
-    max-width: 400px;
-}
-
-.modal-content {
-    text-align: center;
-}
-
-.close {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 24px;
-    cursor: pointer;
-    color: white;
-}
-
-/* Eingabefelder für Registrierung */
-.modal input {
+/* Eingabefelder */
+input {
     width: 100%;
     padding: 0.75rem;
     margin: 0.5rem 0;
@@ -38,8 +10,22 @@
     color: #333;
 }
 
-/* Registrierung Button */
-.modal button {
+/* Nachricht (Statusmeldungen) */
+#message {
+    margin-top: 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+/* Registrierung & Login-Abschnitte */
+#registerSection, #loginSection {
+    padding: 1.5rem;
+    background: #152c4f;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+#registerBtn, #loginBtn, #logoutBtn {
     width: 100%;
     padding: 0.75rem;
     margin-top: 0.5rem;
@@ -53,6 +39,6 @@
     transition: background-color 0.3s ease;
 }
 
-.modal button:hover {
+#registerBtn:hover, #loginBtn:hover, #logoutBtn:hover {
     background-color: #e67e30;
 }
