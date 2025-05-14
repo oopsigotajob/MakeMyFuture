@@ -13,19 +13,32 @@
 <body>
     <div class="container">
         <img src="logo.png" alt="Logo" class="logo" />
-        <h2>Registrierung & Anmeldung</h2>
+        <h2>Login</h2>
 
-        <input type="text" id="name" placeholder="Name" />
         <input type="email" id="email" placeholder="E-Mail" />
         <input type="password" id="password" placeholder="Passwort" />
 
         <div class="button-group">
-            <button id="registerBtn">Registrieren</button>
             <button id="loginBtn">Login</button>
+            <button id="registerOpenBtn">Registrieren</button>
             <button id="logoutBtn">Logout</button>
         </div>
 
         <p id="message"></p>
+    </div>
+
+    <!-- Registrierung-Popup -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Registrierung</h2>
+
+            <input type="text" id="name" placeholder="Name" />
+            <input type="email" id="registerEmail" placeholder="E-Mail" />
+            <input type="password" id="registerPassword" placeholder="Passwort" />
+
+            <button id="registerBtn">Jetzt registrieren</button>
+        </div>
     </div>
 </body>
 </html>
