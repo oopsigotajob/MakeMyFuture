@@ -46,8 +46,8 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     if (error) {
         showMessage("Login fehlgeschlagen: " + error.message, "error");
     } else {
-        // Nach erfolgreichem Login weiterleiten (Startseite.html muss existieren)
-        window.location.href = "startseite.html";
+        // Nach erfolgreichem Login weiterleiten 
+        window.location.href = "index.html";
     }
 });
 
