@@ -2,40 +2,55 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MakeMyFuture Anmeldung</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MakeMyFuture Anmeldung / Startseite</title>
   <link rel="stylesheet" href="style.css" />
-
-  <!-- EmailJS global (vor script.js laden!) -->
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-
-  <!-- Hauptlogik -->
-  <script type="module" src="./script.js"></script>
+  <script defer type="module" src="script.js"></script>
 </head>
 <body>
-  <div class="container">
+
+  <!-- Container für Registrierung und Login -->
+  <div class="container" id="authContainer">
     <img src="logo.png" alt="Logo" class="logo" />
     <h2>Registrierung & Anmeldung</h2>
-
-    <!-- Registrierung -->
+    
     <div id="registerSection">
       <input type="text" id="name" placeholder="Name" required />
       <input type="email" id="registerEmail" placeholder="E-Mail" required />
       <input type="password" id="registerPassword" placeholder="Passwort" required />
       <button id="registerBtn">Jetzt registrieren</button>
     </div>
-
-    <hr />
-
-    <!-- Login -->
+    
+    <hr/>
+    
     <div id="loginSection">
       <input type="email" id="email" placeholder="E-Mail" required />
       <input type="password" id="password" placeholder="Passwort" required />
       <button id="loginBtn">Login</button>
     </div>
+    
+    <p id="message"></p>
   </div>
 
+  <!-- Container für Startseite nach Login -->
+  <div class="start-container" id="startContainer" style="display:none;">
+    <img src="logo.png" alt="Logo" class="logo" />
+    <h1 class="firm-name">MakeMyFuture</h1>
+    <p class="slogan">Oops, I got a Job!</p>
+
+    <div class="welcome-box">
+      <p>Willkommen bei MakeMyFuture! Schön, dass du da bist.</p>
+    </div>
+
+    <div class="popup-box" id="popupBox">
+      <p>Firma? Jetzt registrieren!</p>
+    </div>
+    
+    <button id="logoutBtn" style="margin-top: 30px;">Logout</button>
+  </div>
+
+  <!-- Snackbar für Meldungen -->
   <div id="snackbar"></div>
+
 </body>
 </html>
