@@ -1,95 +1,58 @@
-/* Eingabefelder */
-input {
-    width: 100%;
-    padding: 0.75rem;
-    margin: 0.5rem 0;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 1rem;
-    background-color: #f9f9f9;
-    color: #333;
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0c1a2b;
+  font-family: Arial, sans-serif;
+  color: white;
 }
 
-/* Nachricht (Statusmeldungen) */
-#message {
-    margin-top: 1rem;
-    font-size: 1rem;
-    font-weight: bold;
-}
-
-/* Registrierung & Login-Abschnitte */
-#registerSection, #loginSection {
-    padding: 1.5rem;
-    background: #152c4f;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-/* Buttons */
-#registerBtn, #loginBtn, #logoutBtn, #showRegisterBtn {
-    width: 100%;
-    padding: 0.75rem;
-    margin-top: 0.5rem;
-    background-color: #ff8c42;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-weight: bold;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-#registerBtn:hover, #loginBtn:hover, #logoutBtn:hover, #showRegisterBtn:hover {
-    background-color: #e67e30;
-}
-
-/* Modal Popup (Registrierung) */
-.modal {
-    display: none; /* Standardmäßig versteckt */
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.7);
-}
-
-/* Inhalt des Popups */
-.modal-content {
-    background-color: #fff;
-    margin: 10% auto;
-    padding: 2rem;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 400px;
-    color: #333;
-    text-align: center;
-    box-shadow: 0 0 20px rgba(0,0,0,0.4);
-}
-
-/* Schließen-Symbol */
-.close {
-    float: right;
-    font-size: 1.5rem;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* Logo (optional ergänzen) */
-.logo {
-    width: 100px;
-    margin: 1rem auto;
-    display: block;
-}
-
-/* Container (zentriert) */
 .container {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 2rem;
-    text-align: center;
-    font-family: Arial, sans-serif;
+  max-width: 320px;
+  margin: 100px auto;
+  background-color: #1e2e47;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+  text-align: center;
+}
+
+.logo {
+  width: 80px;
+  margin-bottom: 10px;
+}
+
+input {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 8px;
+}
+
+button {
+  width: 95%;
+  padding: 10px;
+  margin-top: 8px;
+  border: none;
+  background-color: #e07a2e;
+  color: white;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #cf671e;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 20px 0;
+}
+
+#message {
+  margin-top: 15px;
+  font-size: 14px;
 }
