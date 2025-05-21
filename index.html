@@ -1,91 +1,71 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MakeMyFuture • Anmeldung & Start</title>
-
-  <link rel="stylesheet" href="style.css" />
-
-  <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
-
-  <!-- Haupt-Skript (unten im <body>) -->
-  <script defer src="script.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MakeMyFuture Anmeldung</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+    <div class="container">
+        <img src="logo.png" alt="Logo" class="logo" />
+        <h2>Registrierung & Anmeldung</h2>
+        
+        <!-- Registrierung -->
+        <div id="registerSection">
+            <input type="text" id="name" placeholder="Name" required />
+            <input type="email" id="registerEmail" placeholder="E-Mail" required />
+            <input type="password" id="registerPassword" placeholder="Passwort" required />
+            <button id="registerBtn">Jetzt registrieren</button>
+        </div>
 
-  <!-- ================= Auth-Bereich ================= -->
-  <div id="authContainer" class="container">
-    <img src="logo.png" alt="Logo" class="logo" />
-    <h1>MakeMyFuture</h1>
-    <p class="slogan">Oops, I got a Job!</p>
+        <hr />
 
-    <!-- Registrierung -->
-    <div id="registerSection">
-      <h2>Registrierung</h2>
-      <input type="text" id="name" placeholder="Name" required />
-      <input type="email" id="registerEmail" placeholder="E-Mail" required />
-      <input type="password" id="registerPassword" placeholder="Passwort" required />
-      <button id="registerBtn">Jetzt registrieren</button>
+        <!-- Anmeldung -->
+        <div id="loginSection">
+            <input type="email" id="email" placeholder="E-Mail" required />
+            <input type="password" id="password" placeholder="Passwort" required />
+            <button id="loginBtn">Login</button>
+        </div>
+
+        <!-- Nachrichtenbereich -->
+        <p id="message"></p>
     </div>
 
-    <hr />
-
-    <!-- Login -->
-    <div id="loginSection">
-      <h2>Login</h2>
-      <input type="email" id="email" placeholder="E-Mail" required />
-      <input type="password" id="password" placeholder="Passwort" required />
-      <button id="loginBtn">Login</button>
-    </div>
-
-    <!-- Snackbar / Meldungen -->
-    <p id="message"></p>
+    <!-- Snackbar für Meldungen -->
     <div id="snackbar"></div>
-  </div>
 
-  <!-- ================= Startseite (wird nach Login angezeigt) ================= -->
-  <div id="startContainer" class="container hidden">
-    <!-- Logo -->
-    <img src="logo.png" alt="MakeMyFuture Logo" class="logo" />
-    <!-- Firmenname -->
-    <h1 class="headline">MakeMyFuture</h1>
+    <!-- Erweiterte Startseite nach erfolgreichem Login -->
+    <div id="startscreen" class="hidden">
+        <img src="logo.png" alt="MakeMyFuture Logo" class="logo">
+        <h1>MakeMyFuture</h1>
+        <p class="slogan">Oops, I got a Job!</p>
+        <button id="logoutBtn">Abmelden</button>
+    </div>
 
-    <button id="logoutBtn" style="margin-top:30px;">Abmelden</button>
-  </div>
+    <!-- Supabase SDK laden -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
 
-  <!-- Kurzes Inline-Skript nur fürs Umschalten -->
-  <script>
-    // Supabase-Instanz (gleich wie in script.js)
-    const SUPABASE_URL  = 'https://vedcigedhjkarkcbqvtf.supabase.co';
-    const SUPABASE_KEY  = 'dein_anon_key';
-    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <!-- Dein Script, das auf Supabase zugreift -->
+    <script defer src="script.js"></script>
 
-    const authContainer   = document.getElementById('authContainer');
-    const startContainer  = document.getElementById('startContainer');
-    const logoutBtn       = document.getElementById('logoutBtn');
+    <script>
+        document.getElementById("logoutBtn").addEventListener("click", async () => {
+            const { error } = await supabase.auth.signOut();
+            if (!error) {
+                window.location.href = "index.html"; // Zurück zur Anmeldeseite
+            }
+        });
 
-    // Beim Laden: Session prüfen
-    sb.auth.getSession().then(({ data }) => {
-      if (data.session) showStart();
-    });
-
-    // Logout-Handler
-    logoutBtn.addEventListener('click', async () => {
-      await sb.auth.signOut();
-      showAuth();
-    });
-
-    // Helfer
-    function showStart() {
-      authContainer.classList.add('hidden');
-      startContainer.classList.remove('hidden');
-    }
-    function showAuth() {
-      authContainer.classList.remove('hidden');
-      startContainer.classList.add('hidden');
-    }
-  </script>
+        // Startseite wird nach erfolgreichem Login sichtbar gemacht
+        async function checkLoginStatus() {
+            const { data: sessionData } = await supabase.auth.getSession();
+            if (sessionData.session) {
+                document.getElementById("startscreen").classList.remove("hidden");
+                document.querySelector(".container").classList.add("hidden");
+            }
+        }
+        checkLoginStatus();
+    </script>
 </body>
 </html>
