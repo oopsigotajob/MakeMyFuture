@@ -1,39 +1,39 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MakeMyFuture Anmeldung</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MakeMyFuture Anmeldung</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Supabase-SDK laden -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
+
+  <!-- Unser JavaScript nach Supabase laden -->
+  <script src="script.js" defer></script>
 </head>
 <body>
-    <div class="container">
-        <img src="logo.png" alt="Logo" class="logo" />
-        <h2>Registrierung & Anmeldung</h2>
-        
-        <div id="registerSection">
-            <input type="text" id="name" placeholder="Name" required />
-            <input type="email" id="registerEmail" placeholder="E-Mail" required />
-            <input type="password" id="registerPassword" placeholder="Passwort" required />
-            <button id="registerBtn">Jetzt registrieren</button>
-        </div>
-        
-        <hr/>
-        
-        <div id="loginSection">
-            <input type="email" id="email" placeholder="E-Mail" required />
-            <input type="password" id="password" placeholder="Passwort" required />
-            <button id="loginBtn">Login</button>
-        </div>
-        
-        <p id="message"></p>
+  <div class="container">
+    <img src="logo.png" alt="Logo" class="logo" />
+    <h1>MakeMyFuture</h1>
+    <p class="slogan">Oops, I got a Job!</p>
+
+    <div id="registerSection">
+      <input type="text" id="name" placeholder="Name" required />
+      <input type="email" id="registerEmail" placeholder="E-Mail" required />
+      <input type="password" id="registerPassword" placeholder="Passwort" required />
+      <button id="registerBtn">Jetzt registrieren</button>
     </div>
 
-    <!-- Snackbar für Meldungen -->
-    <div id="snackbar"></div>
+    <hr/>
 
-    <!-- Supabase SDK via CDN, vor dem eigenen Script laden -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
-    <script src="script.js" defer></script>
+    <div id="loginSection">
+      <input type="email" id="email" placeholder="E-Mail" required />
+      <input type="password" id="password" placeholder="Passwort" required />
+      <button id="loginBtn">Login</button>
+    </div>
+
+    <div id="snackbar"></div>
+  </div>
 </body>
 </html>
