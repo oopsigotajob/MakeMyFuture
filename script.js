@@ -66,6 +66,6 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
             showMessage("Login fehlgeschlagen: " + error.message, "error");
         }
     } else {
-        window.location.href = "startseite.html";
+        window.location.href = "index.html";
     }
 });
