@@ -85,6 +85,6 @@ document.getElementById('loginBtn')
     if (error) {
       showMessage(`Login fehlgeschlagen: ${error.message}`, 'error');
     } else {
-      location.href = 'startseite.html';
+      location.href = 'index.html';
     }
   });
