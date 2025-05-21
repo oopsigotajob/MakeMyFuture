@@ -1,43 +1,58 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MakeMyFuture – Registrierung & Login</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MakeMyFuture – Anmeldung & Startseite</title>
 
-  <link rel="stylesheet" href="style.css"/>
+  <!-- zentrales Stylesheet -->
+  <link rel="stylesheet" href="style.css" />
 
-  <!-- EmailJS (lädt globales  emailjs  Objekt) -->
-  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-
-  <!-- Haupt-Logic -->
+  <!-- Supabase / EmailJS-Logik -->
   <script type="module" src="script.js"></script>
 </head>
-
 <body>
-  <div class="container">
-    <img src="logo.png" alt="Logo" class="logo"/>
+
+  <!-- ============ Registrierung & Login ============ -->
+  <div class="container" id="authContainer">
+    <img src="logo.png" alt="Logo" class="logo" />
     <h2>Registrierung & Anmeldung</h2>
 
     <!-- Registrierung -->
     <form id="registerForm">
-      <input id="name"            type="text"     placeholder="Name"      required/>
-      <input id="registerEmail"   type="email"    placeholder="E-Mail"    required/>
-      <input id="registerPassword" type="password" placeholder="Passwort" required/>
+      <input id="name"            type="text"     placeholder="Name"      required />
+      <input id="registerEmail"   type="email"    placeholder="E-Mail"    required />
+      <input id="registerPassword" type="password" placeholder="Passwort" required />
       <button id="registerBtn" type="submit">Jetzt registrieren</button>
     </form>
 
-    <hr/>
+    <hr />
 
     <!-- Login -->
     <div id="loginSection">
-      <input id="email"    type="email"    placeholder="E-Mail"    required/>
-      <input id="password" type="password" placeholder="Passwort" required/>
+      <input id="email"    type="email"    placeholder="E-Mail"    required />
+      <input id="password" type="password" placeholder="Passwort" required />
       <button id="loginBtn">Login</button>
     </div>
   </div>
 
-  <!-- Snackbar -->
+  <!-- Snackbar für Meldungen -->
   <div id="snackbar"></div>
+
+  <!-- ============ Startseite nach Login ============ -->
+  <section id="homeSection" class="hidden">
+    <img src="logo.png" alt="Logo" class="logo" />
+    <h1 class="firmname">MakeMyFuture</h1>
+    <p class="slogan">Oops, I got a Job!</p>
+
+    <div class="welcome-box">
+      <p>👋 Schön, dass du wieder da bist! Viel Erfolg bei deiner Jobsuche!</p>
+    </div>
+
+    <div class="popup" id="companyPopup">
+      <p>🎯 Du bist ein Unternehmen? Registriere dich hier!</p>
+    </div>
+  </section>
+
 </body>
 </html>
