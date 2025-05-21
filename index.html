@@ -1,41 +1,41 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>MakeMyFuture Anmeldung</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MakeMyFuture Anmeldung</title>
 
-    <!-- EmailJS eingebunden als globales Skript -->
-    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
 
-    <!-- Dein Hauptskript -->
-    <script type="module" src="script.js"></script>
+  <!-- EmailJS global (vor script.js laden!) -->
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+  <!-- Hauptlogik -->
+  <script type="module" src="./script.js"></script>
 </head>
 <body>
-    <div class="container">
-        <img src="logo.png" alt="Logo" class="logo" />
-        <h2>Registrierung & Anmeldung</h2>
-        
-        <div id="registerSection">
-            <input type="text" id="name" placeholder="Name" required />
-            <input type="email" id="registerEmail" placeholder="E-Mail" required />
-            <input type="password" id="registerPassword" placeholder="Passwort" required />
-            <button id="registerBtn">Jetzt registrieren</button>
-        </div>
-        
-        <hr/>
-        
-        <div id="loginSection">
-            <input type="email" id="email" placeholder="E-Mail" required />
-            <input type="password" id="password" placeholder="Passwort" required />
-            <button id="loginBtn">Login</button>
-        </div>
+  <div class="container">
+    <img src="logo.png" alt="Logo" class="logo" />
+    <h2>Registrierung & Anmeldung</h2>
 
-        <p id="message"></p>
+    <!-- Registrierung -->
+    <div id="registerSection">
+      <input type="text" id="name" placeholder="Name" required />
+      <input type="email" id="registerEmail" placeholder="E-Mail" required />
+      <input type="password" id="registerPassword" placeholder="Passwort" required />
+      <button id="registerBtn">Jetzt registrieren</button>
     </div>
 
-    <!-- Snackbar für Meldungen -->
-    <div id="snackbar"></div>
+    <hr />
+
+    <!-- Login -->
+    <div id="loginSection">
+      <input type="email" id="email" placeholder="E-Mail" required />
+      <input type="password" id="password" placeholder="Passwort" required />
+      <button id="loginBtn">Login</button>
+    </div>
+  </div>
+
+  <div id="snackbar"></div>
 </body>
 </html>
