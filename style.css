@@ -76,6 +76,33 @@ button:hover { background: #218838; }
   opacity: 0;
   transition: opacity .3s ease, visibility .3s ease;
 }
+/* ---------- Startbildschirm ---------- */
+.start-container {
+    text-align: center;
+    margin-top: 20vh;
+}
+
+.logo {
+    width: 150px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #333;
+}
+
+.slogan {
+    font-size: 1.2em;
+    font-style: italic;
+    color: gray;
+}
+
+/* ---------- Versteckte Startseite, bis Login erfolgreich ---------- */
+.hidden {
+    display: none;
+}
 
 #snackbar.show { visibility: visible; opacity: 1; }
 #snackbar.success { background: #28a745; }
