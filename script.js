@@ -1,16 +1,15 @@
-// Kein Import mehr!
+const supabaseUrl = 'https://vedcigedhjkarkcbqvtf.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZGNpZ2VkaGprYXJrY2JxdnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMjI3NjUsImV4cCI6MjA2Mjc5ODc2NX0.Q7By1dg4FFZrA6UPWYVGHJinydzltjlpW3riruZTPXA';
 
-const supabaseUrl = 'https://vedcigedhjkarkcbqvtf.supabase.co'; // Deine Supabase URL
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZGNpZ2VkaGprYXJrY2JxdnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMjI3NjUsImV4cCI6MjA2Mjc5ODc2NX0.Q7By1dg4FFZrA6UPWYVGHJinydzltjlpW3riruZTPXA'; // Dein Supabase Schlüssel
-
-const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+// supabase ist der Namespace vom CDN; erstelle eine Variable mit anderem Namen
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
 document.getElementById("registerBtn").addEventListener("click", async () => {
     const email = document.getElementById("registerEmail").value;
     const password = document.getElementById("registerPassword").value;
     const name = document.getElementById("name").value;
 
-    const { user, error } = await supabase.auth.signUp({
+    const { user, error } = await supabaseClient.auth.signUp({
         email,
         password,
         options: {
@@ -29,7 +28,7 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    const { user, error } = await supabase.auth.signInWithPassword({
+    const { user, error } = await supabaseClient.auth.signInWithPassword({
         email,
         password,
     });
