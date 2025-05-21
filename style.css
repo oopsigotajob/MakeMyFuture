@@ -1,3 +1,4 @@
+/* Allgemeines Layout */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
@@ -24,6 +25,8 @@ input {
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
 }
 
 button {
@@ -32,12 +35,15 @@ button {
     padding: 10px 15px;
     border: none;
     cursor: pointer;
+    width: 100%;
+    border-radius: 5px;
 }
 
 button:hover {
     background-color: #218838;
 }
 
+/* Snackbar für Meldungen */
 #snackbar {
     visibility: hidden;
     min-width: 250px;
@@ -50,8 +56,11 @@ button:hover {
     position: fixed;
     bottom: 30px;
     left: 50%;
+    z-index: 1000;
+    transition: visibility 0.3s ease;
 }
 
+/* Sichtbare Zustände */
 #snackbar.success {
     background-color: #28a745;
     visibility: visible;
@@ -59,5 +68,10 @@ button:hover {
 
 #snackbar.error {
     background-color: #dc3545;
+    visibility: visible;
+}
+
+#snackbar.info {
+    background-color: #007bff;
     visibility: visible;
 }
