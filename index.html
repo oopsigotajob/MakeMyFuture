@@ -1,38 +1,35 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>MakeMyFuture Anmeldung</title>
-    <link rel="stylesheet" href="style.css" />
-    <script defer src="script.js" type="module"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MakeMyFuture</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="container">
-        <img src="logo.png" alt="Logo" class="logo" />
-        <h2>Login</h2>
+  <div class="container">
+    <img src="logo.png" alt="Logo" class="logo" />
+    <h2>Willkommen bei MakeMyFuture</h2>
 
-        <div id="loginSection">
-            <input type="email" id="email" placeholder="E-Mail" />
-            <input type="password" id="password" placeholder="Passwort" />
-            <button id="loginBtn">Login</button>
-            <button id="showRegisterBtn">Registrieren</button>
-            <button id="logoutBtn">Logout</button>
-        </div>
-
-        <p id="message"></p>
+    <div id="registerSection">
+      <input type="text" id="name" placeholder="Name" />
+      <input type="email" id="registerEmail" placeholder="E-Mail" />
+      <input type="password" id="registerPassword" placeholder="Passwort" />
+      <button id="registerBtn">Registrieren</button>
     </div>
 
-    <!-- Registrierungs-Popup -->
-    <div id="registerModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeModal">&times;</span>
-            <h2>Registrieren</h2>
-            <input type="text" id="name" placeholder="Name" />
-            <input type="email" id="registerEmail" placeholder="E-Mail" />
-            <input type="password" id="registerPassword" placeholder="Passwort" />
-            <button id="registerBtn">Jetzt registrieren</button>
-        </div>
+    <hr />
+
+    <div id="loginSection">
+      <input type="email" id="email" placeholder="E-Mail" />
+      <input type="password" id="password" placeholder="Passwort" />
+      <button id="loginBtn">Login</button>
+      <button id="logoutBtn">Logout</button>
     </div>
+
+    <p id="message"></p>
+  </div>
+
+  <script src="script.js" type="module"></script>
 </body>
 </html>
