@@ -24,7 +24,6 @@ input {
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
-    box-sizing: border-box;
 }
 
 button {
@@ -33,9 +32,6 @@ button {
     padding: 10px 15px;
     border: none;
     cursor: pointer;
-    border-radius: 5px;
-    width: 100%;
-    font-size: 16px;
 }
 
 button:hover {
@@ -54,20 +50,15 @@ button:hover {
     position: fixed;
     bottom: 30px;
     left: 50%;
-    z-index: 1;
-    transition: visibility 0s, opacity 0.5s linear;
-    opacity: 0;
-}
-
-#snackbar.show {
-    visibility: visible;
-    opacity: 1;
+    transition: visibility 0.3s, opacity 0.3s ease-in-out;
 }
 
 #snackbar.success {
     background-color: #28a745;
+    visibility: visible;
 }
 
 #snackbar.error {
     background-color: #dc3545;
+    visibility: visible;
 }
