@@ -1,56 +1,33 @@
-body {
-  font-family: sans-serif;
-  background-color: #1b2a49;
-  color: white;
-  padding: 2rem;
-}
+/* ... dein bestehender CSS-Code bleibt ... */
 
-.container {
-  max-width: 400px;
-  margin: auto;
-  background-color: #23345d;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.5);
+#snackbar {
+  visibility: hidden;
+  min-width: 250px;
+  margin-left: -125px;
+  background-color: #4caf50;
+  color: white;
   text-align: center;
-}
-
-input {
-  width: 100%;
-  padding: 0.75rem;
-  margin: 0.5rem 0;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 8px;
+  padding: 16px;
+  position: fixed;
+  z-index: 9999;
+  left: 50%;
+  bottom: 30px;
   font-size: 1rem;
-  background-color: #f9f9f9;
-  color: #333;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
-#registerBtn, #loginBtn {
-  width: 100%;
-  padding: 0.75rem;
-  margin-top: 0.5rem;
-  background-color: #ff8c42;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+#snackbar.show {
+  visibility: visible;
+  animation: fadein 0.5s, fadeout 0.5s 3s;
 }
 
-#registerBtn:hover, #loginBtn:hover {
-  background-color: #e67e30;
+@keyframes fadein {
+  from {bottom: 0; opacity: 0;} 
+  to {bottom: 30px; opacity: 1;}
 }
 
-.logo {
-  width: 100px;
-  margin-bottom: 1rem;
-}
-
-#message {
-  margin-top: 1rem;
-  font-size: 1rem;
-  font-weight: bold;
+@keyframes fadeout {
+  from {bottom: 30px; opacity: 1;} 
+  to {bottom: 0; opacity: 0;}
 }
