@@ -1,58 +1,41 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MakeMyFuture – Anmeldung & Startseite</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>MakeMyFuture Anmeldung</title>
+    <link rel="stylesheet" href="style.css" />
 
-  <!-- zentrales Stylesheet -->
-  <link rel="stylesheet" href="style.css" />
+    <!-- EmailJS eingebunden als globales Skript -->
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
-  <!-- Supabase / EmailJS-Logik -->
-  <script type="module" src="script.js"></script>
+    <!-- Dein Hauptskript -->
+    <script type="module" src="script.js"></script>
 </head>
 <body>
+    <div class="container">
+        <img src="logo.png" alt="Logo" class="logo" />
+        <h2>Registrierung & Anmeldung</h2>
+        
+        <div id="registerSection">
+            <input type="text" id="name" placeholder="Name" required />
+            <input type="email" id="registerEmail" placeholder="E-Mail" required />
+            <input type="password" id="registerPassword" placeholder="Passwort" required />
+            <button id="registerBtn">Jetzt registrieren</button>
+        </div>
+        
+        <hr/>
+        
+        <div id="loginSection">
+            <input type="email" id="email" placeholder="E-Mail" required />
+            <input type="password" id="password" placeholder="Passwort" required />
+            <button id="loginBtn">Login</button>
+        </div>
 
-  <!-- ============ Registrierung & Login ============ -->
-  <div class="container" id="authContainer">
-    <img src="logo.png" alt="Logo" class="logo" />
-    <h2>Registrierung & Anmeldung</h2>
-
-    <!-- Registrierung -->
-    <form id="registerForm">
-      <input id="name"            type="text"     placeholder="Name"      required />
-      <input id="registerEmail"   type="email"    placeholder="E-Mail"    required />
-      <input id="registerPassword" type="password" placeholder="Passwort" required />
-      <button id="registerBtn" type="submit">Jetzt registrieren</button>
-    </form>
-
-    <hr />
-
-    <!-- Login -->
-    <div id="loginSection">
-      <input id="email"    type="email"    placeholder="E-Mail"    required />
-      <input id="password" type="password" placeholder="Passwort" required />
-      <button id="loginBtn">Login</button>
-    </div>
-  </div>
-
-  <!-- Snackbar für Meldungen -->
-  <div id="snackbar"></div>
-
-  <!-- ============ Startseite nach Login ============ -->
-  <section id="homeSection" class="hidden">
-    <img src="logo.png" alt="Logo" class="logo" />
-    <h1 class="firmname">MakeMyFuture</h1>
-    <p class="slogan">Oops, I got a Job!</p>
-
-    <div class="welcome-box">
-      <p>👋 Schön, dass du wieder da bist! Viel Erfolg bei deiner Jobsuche!</p>
+        <p id="message"></p>
     </div>
 
-    <div class="popup" id="companyPopup">
-      <p>🎯 Du bist ein Unternehmen? Registriere dich hier!</p>
-    </div>
-  </section>
-
+    <!-- Snackbar für Meldungen -->
+    <div id="snackbar"></div>
 </body>
 </html>
