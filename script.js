@@ -52,7 +52,7 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     if (error) {
         showMessage("Login fehlgeschlagen: " + error.message, "error");
     } else {
-        window.location.href = "startseite.html"; // Weiterleitung nach Login
+        window.location.href = "index.html"; // Weiterleitung nach Login
     }
 });
 
