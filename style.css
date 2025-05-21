@@ -14,35 +14,43 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+.hidden {
+    display: none;
+}
+
+/* ---------- Startbildschirm ---------- */
+.start-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
 .logo {
-    width: 100px;
+    width: 150px;
     margin-bottom: 20px;
 }
 
 h1 {
-    margin: 10px 0;
+    font-size: 2.5em;
+    font-weight: bold;
     color: #333;
 }
 
 .slogan {
+    font-size: 1.2em;
     font-style: italic;
-    margin-bottom: 20px;
-    color: #777;
+    color: gray;
 }
 
-input {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
+/* ---------- Buttons ---------- */
 button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1em;
     background-color: #28a745;
     color: white;
-    padding: 10px 15px;
     border: none;
     cursor: pointer;
     border-radius: 5px;
@@ -52,6 +60,7 @@ button:hover {
     background-color: #218838;
 }
 
+/* ---------- Snackbar für Meldungen ---------- */
 #snackbar {
     visibility: hidden;
     min-width: 250px;
