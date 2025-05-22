@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -27,9 +28,6 @@
             <input type="password" id="password" placeholder="Passwort" required />
             <button id="loginBtn">Login</button>
         </div>
-
-        <!-- Nachrichtenbereich -->
-        <p id="message"></p>
     </div>
 
     <!-- Snackbar für Meldungen -->
@@ -45,27 +43,7 @@
 
     <!-- Supabase SDK laden -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
-
-    <!-- Dein Script, das auf Supabase zugreift -->
+    <!-- Dein Script -->
     <script defer src="script.js"></script>
-
-    <script>
-        document.getElementById("logoutBtn").addEventListener("click", async () => {
-            const { error } = await supabase.auth.signOut();
-            if (!error) {
-                window.location.href = "index.html"; // Zurück zur Anmeldeseite
-            }
-        });
-
-        // Startseite wird nach erfolgreichem Login sichtbar gemacht
-        async function checkLoginStatus() {
-            const { data: sessionData } = await supabase.auth.getSession();
-            if (sessionData.session) {
-                document.getElementById("startscreen").classList.remove("hidden");
-                document.querySelector(".container").classList.add("hidden");
-            }
-        }
-        checkLoginStatus();
-    </script>
 </body>
 </html>
