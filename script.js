@@ -1,11 +1,10 @@
-// script.js
+// Supabase Konfiguration
 const supabaseUrl = 'https://vedcigedhjkarkcbqvtf.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZGNpZ2VkaGprYXJrY2JxdnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMjI3NjUsImV4cCI6MjA2Mjc5ODc2NX0.Q7By1dg4FFZrA6UPWYVGHJinydzltjlpW3riruZTPXA';
 
-// Erstelle Supabase-Client
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
-// Snackbar-Funktion
+// Snackbar anzeigen
 function showMessage(text, type) {
     const snackbar = document.getElementById("snackbar");
     snackbar.textContent = text;
@@ -21,16 +20,19 @@ document.getElementById("registerBtn").addEventListener("click", async () => {
     const password = document.getElementById("registerPassword").value;
     const name = document.getElementById("name").value;
 
-    const { user, error } = await supabaseClient.auth.signUp({
+    const { error } = await supabaseClient.auth.signUp({
         email,
         password,
-        options: { data: { name } }
+        options: {
+            data: { name },
+            emailRedirectTo: window.location.href // Weiterleitung nach Bestätigung
+        }
     });
 
     if (error) {
         showMessage("Registrierung fehlgeschlagen: " + error.message, "error");
     } else {
-        showMessage("Registrierung erfolgreich! Bitte überprüfe deine E-Mail.", "success");
+        showMessage("Registrierung erfolgreich! Bitte bestätige deine E-Mail.", "success");
     }
 });
 
@@ -39,9 +41,9 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
-    const { user, error } = await supabaseClient.auth.signInWithPassword({
+    const { error } = await supabaseClient.auth.signInWithPassword({
         email,
-        password,
+        password
     });
 
     if (error) {
@@ -49,7 +51,6 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     } else {
         showMessage("Login erfolgreich!", "success");
         setTimeout(() => {
-            // Zeige Startbildschirm direkt ohne Redirect
             document.getElementById("startscreen").classList.remove("hidden");
             document.querySelector(".container").classList.add("hidden");
         }, 1000);
@@ -64,7 +65,7 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
     }
 });
 
-// Session-Check beim Laden
+// Session prüfen
 (async function checkLoginStatus() {
     const { data: sessionData } = await supabaseClient.auth.getSession();
     if (sessionData.session) {
