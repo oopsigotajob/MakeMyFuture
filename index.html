@@ -4,24 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MakeMyFuture</title>
-
-  <!-- dein bestehendes CSS -->
   <link rel="stylesheet" href="style.css" />
-
-  <!-- winzige Zusatz-Styles für die Filter-Icons -->
-  <style>
-    .icon-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:12px 0}
-    .icon{border:2px solid #ccc;border-radius:8px;padding:10px 6px;text-align:center;cursor:pointer;width:90px;user-select:none;font-size:24px;line-height:1.2}
-    .icon.selected{border-color:#28a745;background:#e6f9ea}
-    .result{border:1px solid #ddd;border-radius:8px;padding:10px;margin:8px 0;text-align:left}
-  </style>
 </head>
-
 <body>
-  <!-- ===== Registrierung & Login ===== -->
+  <!-- === Benutzer Login/Registrierung === -->
   <div class="container">
     <img src="logo.png" alt="Logo" class="logo" />
-    <h2>Registrierung&nbsp;&amp;&nbsp;Anmeldung</h2>
+    <h2>Registrierung & Anmeldung</h2>
 
     <div id="registerSection">
       <input type="text" id="name" placeholder="Name" required />
@@ -39,10 +28,10 @@
     </div>
   </div>
 
-  <!-- ===== Snackbar für Meldungen ===== -->
+  <!-- Snackbar für Systemmeldungen -->
   <div id="snackbar"></div>
 
-  <!-- ===== Startscreen nach Benutzer-Login ===== -->
+  <!-- === Benutzer-Startseite === -->
   <div id="startscreen" class="hidden">
     <img src="logo.png" alt="MakeMyFuture Logo" class="logo">
     <h1>MakeMyFuture</h1>
@@ -50,32 +39,28 @@
     <button id="logoutBtn">Abmelden</button>
     <button id="gotoAdminBtn">Zum Adminbereich</button>
 
-    <!-- ---------- Filter-Sektion ---------- -->
+    <!-- === Filter-Bereich === -->
     <div id="filterSection">
-      <!-- Interessen -->
       <h2>Interessensgebiete</h2>
       <div id="interessenIcons" class="icon-grid"></div>
 
-      <!-- Schulabschluss -->
       <h2>Schulabschluss</h2>
       <div id="abschlussIcons" class="icon-grid"></div>
 
-      <!-- Gehalt -->
       <h2>Gehaltsvorstellung</h2>
       <div id="gehaltIcons" class="icon-grid"></div>
 
-      <!-- Lieblingsfächer -->
       <h2>Lieblingsfächer</h2>
       <div id="faecherIcons" class="icon-grid"></div>
 
       <button id="filterBtn">Passende Ausbildungsberufe anzeigen</button>
 
-      <!-- Ergebnisliste -->
+      <!-- Ergebnisse -->
       <div id="resultList"></div>
     </div>
   </div>
 
-  <!-- ===== Admin-Login ===== -->
+  <!-- === Admin Login === -->
   <div id="adminLoginSection" class="container hidden">
     <h2>Admin Login</h2>
     <input type="text" id="adminUser" placeholder="Benutzername" />
@@ -83,13 +68,13 @@
     <button id="adminLoginBtn">Login als Admin</button>
   </div>
 
-  <!-- ===== Admin-Panel ===== -->
+  <!-- === Admin-Panel zur Eingabe von Berufen === -->
   <div id="adminPanel" class="container hidden">
     <h2>Ausbildungsberuf hinzufügen</h2>
     <input type="text" id="beschreibung" placeholder="Beschreibung" />
-    <input type="text" id="abschluss" placeholder="Geforderter Schulabschluss" />
+    <input type="text" id="abschluss" placeholder="Geforderter Schulabschluss (z.B. Abitur)" />
     <input type="text" id="anforderungen" placeholder="Anforderungen" />
-    <input type="text" id="faecher" placeholder="Schulfächer (Komma-getrennt)" />
+    <input type="text" id="faecher" placeholder="Fächer-IDs (Komma-getrennt)" />
     <input type="number" id="verdienst" placeholder="Verdienst (nach Ausbildung)" />
     <input type="text" id="einsatzorte" placeholder="Einsatzorte" />
     <input type="text" id="interessen" placeholder="Interessen-IDs (Komma-getrennt)" />
@@ -98,7 +83,7 @@
     <button id="adminLogoutBtn">Abmelden</button>
   </div>
 
-  <!-- ===== JavaScript ===== -->
+  <!-- === Script === -->
   <script type="module" src="script.js"></script>
 </body>
 </html>
