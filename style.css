@@ -1,5 +1,4 @@
-/* style.css */
-/* ========== Grundlayout ========== */
+/* === Basislayout === */
 body {
   font-family: Arial, sans-serif;
   background: #f4f4f4;
@@ -13,36 +12,42 @@ body {
   padding: 25px 20px;
   background: #fff;
   border-radius: 12px;
-  box-shadow: 0 0 12px rgba(0,0,0,.08);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
 }
 
-.hidden { display: none; }
+.hidden {
+  display: none;
+}
 
 .logo {
   width: 110px;
   margin-bottom: 18px;
 }
 
-.headline {
-  font-size: 2rem;
-  margin-top: 10px;
+h1, h2, h3 {
+  margin-top: 20px;
   color: #333;
 }
 
-.slogan {
-  font-style: italic;
-  color: #777;
-  margin-bottom: 20px;
+hr {
+  margin: 20px 0;
 }
 
-/* ========== Formularelemente ========== */
-input {
+/* === Formulare === */
+input,
+textarea,
+select {
   width: 100%;
   padding: 10px;
-  margin: 10px 0;
+  margin: 8px 0 16px 0;
   border: 1px solid #ccc;
   border-radius: 6px;
   box-sizing: border-box;
+  font-size: 16px;
+}
+
+textarea {
+  resize: vertical;
 }
 
 button {
@@ -54,12 +59,15 @@ button {
   border-radius: 6px;
   cursor: pointer;
   font-size: 16px;
-  transition: background .2s ease;
+  transition: background 0.2s ease;
+  margin-top: 10px;
 }
 
-button:hover { background: #218838; }
+button:hover {
+  background: #218838;
+}
 
-/* ========== Snackbar ========== */
+/* === Snackbar (Benachrichtigungen) === */
 #snackbar {
   visibility: hidden;
   min-width: 250px;
@@ -75,43 +83,35 @@ button:hover { background: #218838; }
   text-align: center;
   z-index: 999;
   opacity: 0;
-  transition: opacity .3s ease, visibility .3s ease;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-#snackbar.show { visibility: visible; opacity: 1; }
-#snackbar.success { background: #28a745; }
-#snackbar.error   { background: #dc3545; }
-
-/* ---------- Startbildschirm ---------- */
-.start-container {
-  text-align: center;
-  margin-top: 20vh;
+#snackbar.show {
+  visibility: visible;
+  opacity: 1;
+}
+#snackbar.success {
+  background: #28a745;
+}
+#snackbar.error {
+  background: #dc3545;
 }
 
-.logo {
-  width: 150px;
+/* === Startscreen / Slogan === */
+.slogan {
+  font-style: italic;
+  color: #777;
+  font-size: 1.2em;
   margin-bottom: 20px;
 }
 
-h1 {
-  font-size: 2.5em;
-  font-weight: bold;
-  color: #333;
-}
-
-.slogan {
-  font-size: 1.2em;
-  font-style: italic;
-  color: gray;
-}
-
-/* ========== Icon-Felder für Filter ========== */
+/* === Icon-Grids (User & Admin) === */
 .icon-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   justify-content: center;
-  margin: 20px 0;
+  margin: 15px 0;
 }
 
 .icon {
@@ -151,7 +151,7 @@ h1 {
   background-color: #e6f9ea;
 }
 
-/* ========== Ergebnisliste ========== */
+/* === Ergebnisliste === */
 .result {
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -159,4 +159,12 @@ h1 {
   margin: 10px 0;
   text-align: left;
   background: #fff;
+}
+
+/* === Labels (optional) === */
+label {
+  font-weight: bold;
+  display: block;
+  margin-top: 12px;
+  text-align: left;
 }
