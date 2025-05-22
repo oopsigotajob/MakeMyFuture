@@ -1,22 +1,17 @@
-console.log("script.js geladen");
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-// Supabase Konfiguration
 const supabaseUrl = 'https://vedcigedhjkarkcbqvtf.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZGNpZ2VkaGprYXJrY2JxdnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMjI3NjUsImV4cCI6MjA2Mjc5ODc2NX0.Q7By1dg4FFZrA6UPWYVGHJinydzltjlpW3riruZTPXA';
 
-const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
+const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
 
-// Snackbar anzeigen
 function showMessage(text, type) {
   const snackbar = document.getElementById("snackbar");
   snackbar.textContent = text;
   snackbar.className = `${type} show`;
-  setTimeout(() => {
-    snackbar.className = '';
-  }, 3000);
+  setTimeout(() => snackbar.className = '', 3000);
 }
 
-// Registrierung
 document.getElementById("registerBtn").addEventListener("click", async () => {
   const email = document.getElementById("registerEmail").value;
   const password = document.getElementById("registerPassword").value;
@@ -31,14 +26,14 @@ document.getElementById("registerBtn").addEventListener("click", async () => {
     }
   });
 
-  if (error) {
-    showMessage("Registrierung fehlgeschlagen: " + error.message, "error");
-  } else {
-    showMessage("Registrierung erfolgreich! Bitte bestätige deine E-Mail.", "success");
-  }
+  showMessage(
+    error
+      ? "Registrierung fehlgeschlagen: " + error.message
+      : "Registrierung erfolgreich! Bitte bestätige deine E-Mail.",
+    error ? "error" : "success"
+  );
 });
 
-// Login
 document.getElementById("loginBtn").addEventListener("click", async () => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -56,13 +51,11 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
   }
 });
 
-// Logout
 document.getElementById("logoutBtn").addEventListener("click", async () => {
   const { error } = await supabaseClient.auth.signOut();
   if (!error) location.reload();
 });
 
-// Session prüfen
 (async function checkLoginStatus() {
   const { data: sessionData } = await supabaseClient.auth.getSession();
   if (sessionData.session) {
