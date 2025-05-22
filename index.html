@@ -64,30 +64,25 @@
     <button id="adminLoginBtn">Login als Admin</button>
   </div>
 
-  <!-- === Admin Panel mit Dropdowns & Checkboxen === -->
+  <!-- === Admin Panel mit Icons statt Checkboxen === -->
   <div id="adminPanel" class="container hidden">
     <h2>Ausbildungsberuf hinzufügen</h2>
-
-    <input type="text" id="beschreibung" placeholder="Beschreibung" />
+    <input type="text" id="beschreibung" placeholder="Berufsbezeichnung" />
     <textarea id="anforderungen" placeholder="Anforderungen"></textarea>
     <input type="number" id="verdienst" placeholder="Verdienst (nach Ausbildung)" />
     <input type="text" id="einsatzorte" placeholder="Einsatzorte" />
 
-    <!-- Dropdown für Abschluss -->
-    <label for="abschlussSelect">Schulabschluss:</label>
-    <select id="abschlussSelect"></select>
+    <h3>Schulabschluss (eine Auswahl)</h3>
+    <div id="abschlussIconsAdmin" class="icon-grid"></div>
 
-    <!-- Dropdown für Gehaltsbereich -->
-    <label for="gehaltsbereichSelect">Gehaltsbereich:</label>
-    <select id="gehaltsbereichSelect"></select>
+    <h3>Gehaltsbereich (eine Auswahl)</h3>
+    <div id="gehaltsbereichIconsAdmin" class="icon-grid"></div>
 
-    <!-- Checkboxen für Interessen -->
-    <label>Interessensgebiete:</label>
-    <div id="interessenCheckboxes"></div>
+    <h3>Interessensgebiete (mehrere möglich)</h3>
+    <div id="interessenIconsAdmin" class="icon-grid"></div>
 
-    <!-- Checkboxen für Fächer -->
-    <label>Relevante Schulfächer:</label>
-    <div id="faecherCheckboxes"></div>
+    <h3>Relevante Fächer (mehrere möglich)</h3>
+    <div id="faecherIconsAdmin" class="icon-grid"></div>
 
     <button id="addBerufBtn">Speichern</button>
     <button id="adminLogoutBtn">Abmelden</button>
