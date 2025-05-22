@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- === Benutzer Login/Registrierung === -->
+  <!-- === Benutzerbereich === -->
   <div class="container">
     <img src="logo.png" alt="Logo" class="logo" />
     <h2>Registrierung & Anmeldung</h2>
@@ -28,10 +28,9 @@
     </div>
   </div>
 
-  <!-- Snackbar für Systemmeldungen -->
   <div id="snackbar"></div>
 
-  <!-- === Benutzer-Startseite === -->
+  <!-- === Benutzer-Startseite mit Filtern === -->
   <div id="startscreen" class="hidden">
     <img src="logo.png" alt="MakeMyFuture Logo" class="logo">
     <h1>MakeMyFuture</h1>
@@ -39,7 +38,6 @@
     <button id="logoutBtn">Abmelden</button>
     <button id="gotoAdminBtn">Zum Adminbereich</button>
 
-    <!-- === Filter-Bereich === -->
     <div id="filterSection">
       <h2>Interessensgebiete</h2>
       <div id="interessenIcons" class="icon-grid"></div>
@@ -54,8 +52,6 @@
       <div id="faecherIcons" class="icon-grid"></div>
 
       <button id="filterBtn">Passende Ausbildungsberufe anzeigen</button>
-
-      <!-- Ergebnisse -->
       <div id="resultList"></div>
     </div>
   </div>
@@ -68,22 +64,35 @@
     <button id="adminLoginBtn">Login als Admin</button>
   </div>
 
-  <!-- === Admin-Panel zur Eingabe von Berufen === -->
+  <!-- === Admin Panel mit Dropdowns & Checkboxen === -->
   <div id="adminPanel" class="container hidden">
     <h2>Ausbildungsberuf hinzufügen</h2>
+
     <input type="text" id="beschreibung" placeholder="Beschreibung" />
-    <input type="text" id="abschluss" placeholder="Geforderter Schulabschluss (z.B. Abitur)" />
-    <input type="text" id="anforderungen" placeholder="Anforderungen" />
-    <input type="text" id="faecher" placeholder="Fächer-IDs (Komma-getrennt)" />
+    <textarea id="anforderungen" placeholder="Anforderungen"></textarea>
     <input type="number" id="verdienst" placeholder="Verdienst (nach Ausbildung)" />
     <input type="text" id="einsatzorte" placeholder="Einsatzorte" />
-    <input type="text" id="interessen" placeholder="Interessen-IDs (Komma-getrennt)" />
-    <input type="number" id="gehaltsbereich" placeholder="Gehaltsbereich-ID" />
+
+    <!-- Dropdown für Abschluss -->
+    <label for="abschlussSelect">Schulabschluss:</label>
+    <select id="abschlussSelect"></select>
+
+    <!-- Dropdown für Gehaltsbereich -->
+    <label for="gehaltsbereichSelect">Gehaltsbereich:</label>
+    <select id="gehaltsbereichSelect"></select>
+
+    <!-- Checkboxen für Interessen -->
+    <label>Interessensgebiete:</label>
+    <div id="interessenCheckboxes"></div>
+
+    <!-- Checkboxen für Fächer -->
+    <label>Relevante Schulfächer:</label>
+    <div id="faecherCheckboxes"></div>
+
     <button id="addBerufBtn">Speichern</button>
     <button id="adminLogoutBtn">Abmelden</button>
   </div>
 
-  <!-- === Script === -->
   <script type="module" src="script.js"></script>
 </body>
 </html>
