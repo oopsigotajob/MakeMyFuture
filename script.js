@@ -1,9 +1,21 @@
+// script.js
 const supabaseUrl = 'https://vedcigedhjkarkcbqvtf.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZGNpZ2VkaGprYXJrY2JxdnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMjI3NjUsImV4cCI6MjA2Mjc5ODc2NX0.Q7By1dg4FFZrA6UPWYVGHJinydzltjlpW3riruZTPXA';
 
-// Supabase ist der Namespace vom CDN; erstelle eine Variable mit anderem Namen
+// Erstelle Supabase-Client
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
+// Snackbar-Funktion
+function showMessage(text, type) {
+    const snackbar = document.getElementById("snackbar");
+    snackbar.textContent = text;
+    snackbar.className = `${type} show`;
+    setTimeout(() => {
+        snackbar.className = '';
+    }, 3000);
+}
+
+// Registrierung
 document.getElementById("registerBtn").addEventListener("click", async () => {
     const email = document.getElementById("registerEmail").value;
     const password = document.getElementById("registerPassword").value;
@@ -12,9 +24,7 @@ document.getElementById("registerBtn").addEventListener("click", async () => {
     const { user, error } = await supabaseClient.auth.signUp({
         email,
         password,
-        options: {
-            data: { name }
-        }
+        options: { data: { name } }
     });
 
     if (error) {
@@ -24,6 +34,7 @@ document.getElementById("registerBtn").addEventListener("click", async () => {
     }
 });
 
+// Login
 document.getElementById("loginBtn").addEventListener("click", async () => {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
@@ -37,19 +48,27 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
         showMessage("Login fehlgeschlagen: " + error.message, "error");
     } else {
         showMessage("Login erfolgreich!", "success");
-
-        // Warte kurz, damit Nutzer die Meldung sieht, dann weiterleiten
         setTimeout(() => {
-            window.location.href = "index.html";
-        }, 2000);
+            // Zeige Startbildschirm direkt ohne Redirect
+            document.getElementById("startscreen").classList.remove("hidden");
+            document.querySelector(".container").classList.add("hidden");
+        }, 1000);
     }
 });
 
-function showMessage(text, type) {
-    const snackbar = document.getElementById("snackbar");
-    snackbar.textContent = text;
-    snackbar.className = type;
-    setTimeout(() => {
-        snackbar.className = "";
-    }, 3000);
-}
+// Logout
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+    const { error } = await supabaseClient.auth.signOut();
+    if (!error) {
+        location.reload();
+    }
+});
+
+// Session-Check beim Laden
+(async function checkLoginStatus() {
+    const { data: sessionData } = await supabaseClient.auth.getSession();
+    if (sessionData.session) {
+        document.getElementById("startscreen").classList.remove("hidden");
+        document.querySelector(".container").classList.add("hidden");
+    }
+})();
