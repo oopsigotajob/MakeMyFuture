@@ -1,3 +1,4 @@
+/* style.css */
 /* ========== Grundlayout ========== */
 body {
   font-family: Arial, sans-serif;
@@ -76,6 +77,11 @@ button:hover { background: #218838; }
   opacity: 0;
   transition: opacity .3s ease, visibility .3s ease;
 }
+
+#snackbar.show { visibility: visible; opacity: 1; }
+#snackbar.success { background: #28a745; }
+#snackbar.error   { background: #dc3545; }
+
 /* ---------- Startbildschirm ---------- */
 .start-container {
     text-align: center;
@@ -98,12 +104,3 @@ h1 {
     font-style: italic;
     color: gray;
 }
-
-/* ---------- Versteckte Startseite, bis Login erfolgreich ---------- */
-.hidden {
-    display: none;
-}
-
-#snackbar.show { visibility: visible; opacity: 1; }
-#snackbar.success { background: #28a745; }
-#snackbar.error   { background: #dc3545; }
