@@ -34,9 +34,30 @@
     <h1>MakeMyFuture</h1>
     <p class="slogan">Oops, I got a Job!</p>
     <button id="logoutBtn">Abmelden</button>
+    <button id="gotoAdminBtn">Zum Adminbereich</button>
   </div>
 
-  <!-- WICHTIG: als Modul -->
+  <!-- Admin Login Section -->
+  <div id="adminLoginSection" class="container hidden">
+    <h2>Admin Login</h2>
+    <input type="text" id="adminUser" placeholder="Benutzername" />
+    <input type="password" id="adminPass" placeholder="Passwort" />
+    <button id="adminLoginBtn">Login als Admin</button>
+  </div>
+
+  <!-- Admin Panel -->
+  <div id="adminPanel" class="container hidden">
+    <h2>Ausbildungsberuf hinzufügen</h2>
+    <input type="text" id="beschreibung" placeholder="Beschreibung" />
+    <input type="text" id="abschluss" placeholder="Geforderter Schulabschluss" />
+    <input type="text" id="anforderungen" placeholder="Anforderungen" />
+    <input type="text" id="faecher" placeholder="Schulfächer" />
+    <input type="text" id="verdienst" placeholder="Verdienst (nach Ausbildung)" />
+    <input type="text" id="einsatzorte" placeholder="Einsatzorte" />
+    <button id="addBerufBtn">Speichern</button>
+    <button id="adminLogoutBtn">Abmelden</button>
+  </div>
+
   <script type="module" src="script.js"></script>
 </body>
 </html>
