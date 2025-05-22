@@ -5,18 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>MakeMyFuture Anmeldung</title>
   <link rel="stylesheet" href="style.css" />
-
-  <!-- Supabase SDK zuerst laden -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js" defer></script>
-  <!-- Dann dein eigenes Skript -->
-  <script src="script.js" defer></script>
 </head>
 <body>
   <div class="container">
     <img src="logo.png" alt="Logo" class="logo" />
     <h2>Registrierung & Anmeldung</h2>
 
-    <!-- Registrierung -->
     <div id="registerSection">
       <input type="text" id="name" placeholder="Name" required />
       <input type="email" id="registerEmail" placeholder="E-Mail" required />
@@ -26,7 +20,6 @@
 
     <hr />
 
-    <!-- Anmeldung -->
     <div id="loginSection">
       <input type="email" id="email" placeholder="E-Mail" required />
       <input type="password" id="password" placeholder="Passwort" required />
@@ -34,15 +27,16 @@
     </div>
   </div>
 
-  <!-- Snackbar für Meldungen -->
   <div id="snackbar"></div>
 
-  <!-- Startbildschirm nach erfolgreichem Login -->
   <div id="startscreen" class="hidden">
     <img src="logo.png" alt="MakeMyFuture Logo" class="logo">
     <h1>MakeMyFuture</h1>
     <p class="slogan">Oops, I got a Job!</p>
     <button id="logoutBtn">Abmelden</button>
   </div>
+
+  <!-- WICHTIG: als Modul -->
+  <script type="module" src="script.js"></script>
 </body>
 </html>
