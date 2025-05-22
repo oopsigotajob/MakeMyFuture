@@ -2,7 +2,6 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 
 const supabaseUrl = 'https://vedcigedhjkarkcbqvtf.supabase.co';
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZGNpZ2VkaGprYXJrY2JxdnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMjI3NjUsImV4cCI6MjA2Mjc5ODc2NX0.Q7By1dg4FFZrA6UPWYVGHJinydzltjlpW3riruZTPXA';
-
 const supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
 
 function showMessage(text, type) {
@@ -12,6 +11,7 @@ function showMessage(text, type) {
   setTimeout(() => snackbar.className = '', 3000);
 }
 
+// Registrierung
 document.getElementById("registerBtn").addEventListener("click", async () => {
   const email = document.getElementById("registerEmail").value;
   const password = document.getElementById("registerPassword").value;
@@ -34,6 +34,7 @@ document.getElementById("registerBtn").addEventListener("click", async () => {
   );
 });
 
+// Benutzer-Login
 document.getElementById("loginBtn").addEventListener("click", async () => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -51,11 +52,13 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
   }
 });
 
+// Logout
 document.getElementById("logoutBtn").addEventListener("click", async () => {
   const { error } = await supabaseClient.auth.signOut();
   if (!error) location.reload();
 });
 
+// Session prüfen
 (async function checkLoginStatus() {
   const { data: sessionData } = await supabaseClient.auth.getSession();
   if (sessionData.session) {
@@ -63,3 +66,48 @@ document.getElementById("logoutBtn").addEventListener("click", async () => {
     document.querySelector(".container").classList.add("hidden");
   }
 })();
+
+// Admin-Login (lokal, ohne E-Mail)
+const adminCredentials = {
+  username: "admin",
+  password: "geheim123"
+};
+
+document.getElementById("gotoAdminBtn").addEventListener("click", () => {
+  document.querySelector(".container").classList.add("hidden");
+  document.getElementById("startscreen").classList.add("hidden");
+  document.getElementById("adminLoginSection").classList.remove("hidden");
+});
+
+document.getElementById("adminLoginBtn").addEventListener("click", () => {
+  const user = document.getElementById("adminUser").value;
+  const pass = document.getElementById("adminPass").value;
+  if (user === adminCredentials.username && pass === adminCredentials.password) {
+    document.getElementById("adminLoginSection").classList.add("hidden");
+    document.getElementById("adminPanel").classList.remove("hidden");
+    showMessage("Admin erfolgreich eingeloggt", "success");
+  } else {
+    showMessage("Falsche Admin-Daten", "error");
+  }
+});
+
+document.getElementById("adminLogoutBtn").addEventListener("click", () => {
+  document.getElementById("adminPanel").classList.add("hidden");
+  document.querySelector(".container").classList.remove("hidden");
+  document.getElementById("adminLoginSection").classList.add("hidden");
+});
+
+// Ausbildungsberuf speichern
+document.getElementById("addBerufBtn").addEventListener("click", async () => {
+  const data = {
+    beschreibung: document.getElementById("beschreibung").value,
+    abschluss: document.getElementById("abschluss").value,
+    anforderungen: document.getElementById("anforderungen").value,
+    faecher: document.getElementById("faecher").value,
+    verdienst: document.getElementById("verdienst").value,
+    einsatzorte: document.getElementById("einsatzorte").value,
+  };
+
+  const { error } = await supabaseClient.from('ausbildungsberufe').insert([data]);
+  showMessage(error ? "Fehler beim Speichern" : "Beruf erfolgreich gespeichert", error ? "error" : "success");
+});
