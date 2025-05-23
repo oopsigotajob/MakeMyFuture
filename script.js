@@ -148,7 +148,7 @@ document.getElementById("addBerufBtn").addEventListener("click", async () => {
   }
 
   const { error } = await supabase.from("ausbildungsberufe").insert({
-    berufbezeichnung: berufsbezeichnung,
+    berufsbezeichnung,
     beschreibung,
     anforderungen,
     verdienst,
