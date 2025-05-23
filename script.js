@@ -135,10 +135,10 @@ async function loadAdminIconGrids() {
 // === Admin: Beruf speichern ===
 document.getElementById("addBerufBtn").addEventListener("click", async () => {
   const berufsbezeichnung = document.getElementById("berufsbezeichnung").value;
-  const beschreibung = document.getElementById("beschreibung").value;
-  const anforderungen = document.getElementById("anforderungen").value;
-  const verdienst = parseInt(document.getElementById("verdienst").value);
-  const einsatzorte = document.getElementById("einsatzorte").value;
+  const beschreibung = document.getElementById("adminBeschreibung").value;
+  const anforderungen = document.getElementById("adminAnforderungen").value;
+  const verdienst = parseInt(document.getElementById("adminVerdienst").value);
+  const einsatzorte = document.getElementById("adminEinsatzorte").value;
 
   const abschluss_id = getSelectedSingleId("abschlussIconsAdmin");
   const gehaltsbereich_id = getSelectedSingleId("gehaltsbereichIconsAdmin");
@@ -147,7 +147,6 @@ document.getElementById("addBerufBtn").addEventListener("click", async () => {
 
   if (!beschreibung || !abschluss_id || !gehaltsbereich_id) {
     showMessage("Bitte mindestens Beschreibung, Abschluss und Gehalt wählen", "error");
-
     return;
   }
 
@@ -168,10 +167,10 @@ document.getElementById("addBerufBtn").addEventListener("click", async () => {
   } else {
     showMessage("Beruf gespeichert", "success");
     document.getElementById("berufsbezeichnung").value = "";
-    document.getElementById("beschreibung").value = "";
-    document.getElementById("anforderungen").value = "";
-    document.getElementById("verdienst").value = "";
-    document.getElementById("einsatzorte").value = "";
+    document.getElementById("adminBeschreibung").value = "";
+    document.getElementById("adminAnforderungen").value = "";
+    document.getElementById("adminVerdienst").value = "";
+    document.getElementById("adminEinsatzorte").value = "";
     document.querySelectorAll("#adminPanel .icon.selected").forEach(el => el.classList.remove("selected"));
   }
 });
@@ -221,7 +220,7 @@ document.getElementById("filterBtn").addEventListener("click", async () => {
   out.innerHTML = data.length
     ? data.map(b => `
       <div class="result">
-        <strong>${b.berufsbezeichnungen}</strong><br>
+        <strong>${b.berufsbezeichnung}</strong><br>
         Abschluss: ${b.abschluesse?.name || '–'}<br>
         Einsatzorte: ${b.einsatzorte || '–'}
       </div>`).join("")
