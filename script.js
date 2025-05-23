@@ -1,155 +1,230 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-const supabaseUrl = 'https://xyzcompany.supabase.co' // ERSETZE mit deiner Supabase URL
-const supabaseKey = 'public-anonymous-key'          // ERSETZE mit deinem Supabase API-Key
-const supabase = createClient(supabaseUrl, supabaseKey)
+const supabase = createClient(
+  'https://vedcigedhjkarkcbqvtf.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZGNpZ2VkaGprYXJrY2JxdnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMjI3NjUsImV4cCI6MjA2Mjc5ODc2NX0.Q7By1dg4FFZrA6UPWYVGHJinydzltjlpW3riruZTPXA'
+);
 
-let currentUserId = null; // Wird nach Login gesetzt
-
-const interessenIcons = document.getElementById('faecherIcons')
-const resultList = document.getElementById('resultList')
-
-let interessenListe = []
-let currentIndex = 0
-
-// Beispiel-Login (ersetze mit echtem Auth-Flow)
-async function fakeLogin() {
-  currentUserId = '11111111-1111-1111-1111-111111111111' // Dummy User-ID
-  await loadInteressen()
-}
-fakeLogin()
-
-// Lade alle Interessen aus Supabase
-async function loadInteressen() {
-  const { data, error } = await supabase.from('interessen').select('*')
-  if (error) {
-    console.error('Fehler beim Laden der Interessen:', error)
-    interessenIcons.innerHTML = '<p>Interessen konnten nicht geladen werden.</p>'
-    return
-  }
-  interessenListe = data
-  currentIndex = 0
-  showNextInteresse()
+function showMessage(text, type) {
+  const sb = document.getElementById("snackbar");
+  sb.textContent = text;
+  sb.className = `${type} show`;
+  setTimeout(() => (sb.className = ""), 3000);
 }
 
-// Zeige das aktuelle Interesse als Swipe-Icon
-function showNextInteresse() {
-  interessenIcons.innerHTML = ''
-  if (currentIndex >= interessenListe.length) {
-    interessenIcons.innerHTML = '<p>Du hast alle Interessen ausgewählt!</p>'
-    showPassendeJobs()
-    return
-  }
+// === Registrierung & Login ===
+document.getElementById("registerBtn").addEventListener("click", async () => {
+  const email = document.getElementById("registerEmail").value;
+  const password = document.getElementById("registerPassword").value;
+  const name = document.getElementById("name").value;
 
-  const interesse = interessenListe[currentIndex]
-  const iconDiv = document.createElement('div')
-  iconDiv.className = 'icon swipe-icon'
-  iconDiv.style.userSelect = 'none'
-  iconDiv.innerHTML = `<span>${interesse.name}</span>` // Optional: Icon hier ergänzen
-  interessenIcons.appendChild(iconDiv)
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { name }, emailRedirectTo: window.location.href }
+  });
 
-  addSwipeListeners(iconDiv, interesse.id)
-}
+  showMessage(
+    error ? "Registrierung fehlgeschlagen: " + error.message : "Registrierung erfolgreich! Bitte E-Mail bestätigen.",
+    error ? "error" : "success"
+  );
+});
 
-// Swipe-Listener für Touch-Geräte
-function addSwipeListeners(element, interesseId) {
-  let startX = 0
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  element.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].clientX
-  })
-
-  element.addEventListener('touchend', async (e) => {
-    const endX = e.changedTouches[0].clientX
-    const deltaX = endX - startX
-
-    if (deltaX > 50) {
-      await saveUserInteresse(interesseId, 'zugestimmt')
-      currentIndex++
-      showNextInteresse()
-    } else if (deltaX < -50) {
-      await saveUserInteresse(interesseId, 'abgelehnt')
-      currentIndex++
-      showNextInteresse()
-    }
-  })
-}
-
-// Speichere Auswahl des Users in Supabase
-async function saveUserInteresse(interesseId, status) {
-  if (!currentUserId) {
-    alert('Bitte zuerst einloggen!')
-    return
-  }
-  const { error } = await supabase.from('user_interessen').upsert({
-    user_id: currentUserId,
-    interesse_id: interesseId,
-    status: status
-  }, { onConflict: ['user_id', 'interesse_id'] })
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    console.error('Fehler beim Speichern der Auswahl:', error)
+    showMessage("Login fehlgeschlagen: " + error.message, "error");
   } else {
-    console.log(`Interesse ${interesseId} als ${status} gespeichert`)
+    showMessage("Login erfolgreich!", "success");
+    setTimeout(() => {
+      document.getElementById("startscreen").classList.remove("hidden");
+      document.querySelector(".container").classList.add("hidden");
+      loadFilterOptions();
+    }, 1000);
   }
+});
+
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  await supabase.auth.signOut();
+  location.reload();
+});
+
+// === Admin Login ===
+const adminCredentials = { username: "admin", password: "geheim123" };
+
+document.getElementById("gotoAdminBtn").addEventListener("click", () => {
+  document.getElementById("startscreen").classList.add("hidden");
+  document.getElementById("adminLoginSection").classList.remove("hidden");
+});
+
+document.getElementById("adminLoginBtn").addEventListener("click", () => {
+  const user = document.getElementById("adminUser").value;
+  const pass = document.getElementById("adminPass").value;
+
+  if (user === adminCredentials.username && pass === adminCredentials.password) {
+    document.getElementById("adminLoginSection").classList.add("hidden");
+    document.getElementById("adminPanel").classList.remove("hidden");
+    showMessage("Admin eingeloggt", "success");
+    loadAdminIconGrids();
+  } else {
+    showMessage("Falsche Admin-Daten", "error");
+  }
+});
+
+document.getElementById("adminLogoutBtn").addEventListener("click", () => {
+  document.getElementById("adminPanel").classList.add("hidden");
+  document.getElementById("adminLoginSection").classList.add("hidden");
+  document.querySelector(".container").classList.remove("hidden");
+  showMessage("Admin abgemeldet", "success");
+});
+
+// === Icon Grid Utilitys ===
+function fillIconGrid(containerId, items, labelFn = x => x.name, multiple = true) {
+  const grid = document.getElementById(containerId);
+  grid.innerHTML = "";
+  items.forEach(it => {
+    const div = document.createElement("div");
+    div.className = "icon";
+    div.dataset.id = it.id;
+    div.innerHTML = `${it.icon || "❓"}<br><span>${labelFn(it)}</span>`;
+    grid.appendChild(div);
+  });
+
+  grid.addEventListener("click", e => {
+    const el = e.target.closest(".icon");
+    if (!el) return;
+    if (multiple) {
+      el.classList.toggle("selected");
+    } else {
+      grid.querySelectorAll(".icon").forEach(icon => icon.classList.remove("selected"));
+      el.classList.add("selected");
+    }
+  });
 }
 
-// Zeige passende Jobs basierend auf den zugestimmten Interessen an
-async function showPassendeJobs() {
-  const { data: userInteressen } = await supabase
-    .from('user_interessen')
-    .select('interesse_id')
-    .eq('user_id', currentUserId)
-    .eq('status', 'zugestimmt')
-
-  if (!userInteressen || userInteressen.length === 0) {
-    resultList.innerHTML = '<p>Keine Interessen gewählt.</p>'
-    return
-  }
-
-  const interesseIds = userInteressen.map(ui => ui.interesse_id)
-
-  const { data: jobInteressen } = await supabase
-    .from('job_interessen')
-    .select('job_id, interesse_id')
-    .in('interesse_id', interesseIds)
-
-  if (!jobInteressen || jobInteressen.length === 0) {
-    resultList.innerHTML = '<p>Keine passenden Jobs gefunden.</p>'
-    return
-  }
-
-  const jobIds = [...new Set(jobInteressen.map(ji => ji.job_id))]
-
-  const { data: jobs } = await supabase
-    .from('jobs')
-    .select('*')
-    .in('id', jobIds)
-
-  if (!jobs || jobs.length === 0) {
-    resultList.innerHTML = '<p>Keine passenden Jobs gefunden.</p>'
-    return
-  }
-
-  // Sortiere Jobs nach Übereinstimmungsanzahl
-  const jobsMitMatchCount = jobs.map(job => {
-    const relatedInteressen = jobInteressen
-      .filter(ji => ji.job_id === job.id)
-      .map(ji => ji.interesse_id)
-    const matchCount = relatedInteressen.filter(id => interesseIds.includes(id)).length
-    return { ...job, matchCount }
-  }).sort((a, b) => b.matchCount - a.matchCount)
-
-  // Ausgabe
-  resultList.innerHTML = ''
-  jobsMitMatchCount.forEach(job => {
-    const div = document.createElement('div')
-    div.className = 'result'
-    div.innerHTML = `
-      <h3>${job.berufsbezeichnung}</h3>
-      <p>${job.beschreibung}</p>
-      <p><strong>Passende Interessen:</strong> ${job.matchCount}</p>
-    `
-    resultList.appendChild(div)
-  })
+function getSelectedMultipleIds(containerId) {
+  return Array.from(document.querySelectorAll(`#${containerId} .icon.selected`)).map(el =>
+    Number(el.dataset.id)
+  );
 }
+
+function getSelectedSingleId(containerId) {
+  const el = document.querySelector(`#${containerId} .icon.selected`);
+  return el ? Number(el.dataset.id) : null;
+}
+
+// === Admin: Icons laden ===
+async function loadAdminIconGrids() {
+  const [abschluesse, interessen, faecher] = await Promise.all([
+    supabase.from("abschluesse").select("*").then(r => r.data || []),
+    supabase.from("interessen").select("*").then(r => r.data || []),
+    supabase.from("faecher").select("*").then(r => r.data || [])
+  ]);
+
+  fillIconGrid("abschlussIconsAdmin", abschluesse, x => x.name, false);
+  fillIconGrid("interessenIconsAdmin", interessen);
+  fillIconGrid("faecherIconsAdmin", faecher);
+}
+
+// === Admin: Beruf speichern ===
+document.getElementById("addBerufBtn").addEventListener("click", async () => {
+  const berufsbezeichnung = document.getElementById("berufsbezeichnung").value;
+  const beschreibung = document.getElementById("beschreibung").value;
+  const anforderungen = document.getElementById("anforderungen").value;
+  const verdienst = parseInt(document.getElementById("verdienst").value);
+  const einsatzorte = document.getElementById("einsatzorte").value;
+
+  const abschluss_id = getSelectedSingleId("abschlussIconsAdmin");
+  const interessen_ids = getSelectedMultipleIds("interessenIconsAdmin");
+  const faecher_ids = getSelectedMultipleIds("faecherIconsAdmin");
+
+  if (!beschreibung || !abschluss_id) {
+    showMessage("Bitte mindestens Beschreibung und Abschluss wählen", "error");
+    return;
+  }
+
+  const { error } = await supabase.from("ausbildungsberufe").insert({
+    berufsbezeichnung,
+    beschreibung,
+    anforderungen,
+    verdienst,
+    einsatzorte,
+    abschluss_id,
+    interessen_ids,
+    faecher_ids
+  });
+
+  if (error) {
+    showMessage("Fehler: " + error.message, "error");
+  } else {
+    showMessage("Beruf gespeichert", "success");
+    document.getElementById("berufsbezeichnung").value = "";
+    document.getElementById("beschreibung").value = "";
+    document.getElementById("anforderungen").value = "";
+    document.getElementById("verdienst").value = "";
+    document.getElementById("einsatzorte").value = "";
+    document.querySelectorAll("#adminPanel .icon.selected").forEach(el => el.classList.remove("selected"));
+  }
+});
+
+// === Benutzer: Filter laden & anzeigen ===
+async function loadFilterOptions() {
+  const [interessen, abschluesse, faecher] = await Promise.all([
+    supabase.from("interessen").select("*").then(r => r.data || []),
+    supabase.from("abschluesse").select("*").then(r => r.data || []),
+    supabase.from("faecher").select("*").then(r => r.data || [])
+  ]);
+
+  fillIconGrid("interessenIcons", interessen);
+  fillIconGrid("abschlussIcons", abschluesse, x => x.name, false);
+  fillIconGrid("faecherIcons", faecher);
+}
+
+// === Benutzer: Filter anwenden ===
+document.getElementById("filterBtn").addEventListener("click", async () => {
+  const interessenIds = getSelectedMultipleIds("interessenIcons");
+  const abschlussId = getSelectedSingleId("abschlussIcons");
+  const faecherIds = getSelectedMultipleIds("faecherIcons");
+
+  let query = supabase.from("ausbildungsberufe").select(`
+    id, berufsbezeichnung, beschreibung, verdienst, einsatzorte, anforderungen,
+    abschluesse(name),
+    interessen_ids, faecher_ids
+  `);
+
+  if (interessenIds.length) query = query.overlaps("interessen_ids", interessenIds);
+  if (faecherIds.length) query = query.overlaps("faecher_ids", faecherIds);
+  if (abschlussId) query = query.eq("abschluss_id", abschlussId);
+
+  const { data, error } = await query;
+  const out = document.getElementById("resultList");
+
+  if (error) {
+    showMessage("Fehler beim Filtern: " + error.message, "error");
+    out.innerHTML = "";
+    return;
+  }
+
+  out.innerHTML = data.length
+    ? data.map(b => `
+      <div class="result">
+        <strong>${b.berufsbezeichnung}</strong><br>
+        Abschluss: ${b.abschluesse?.name || '–'}<br>
+        Einsatzorte: ${b.einsatzorte || '–'}
+      </div>`).join("")
+    : "<p>Keine passenden Berufe gefunden.</p>";
+});
+
+// === Session-Check ===
+(async () => {
+  const { data: sessionData } = await supabase.auth.getSession();
+  if (sessionData.session) {
+    document.getElementById("startscreen").classList.remove("hidden");
+    document.querySelector(".container").classList.add("hidden");
+    loadFilterOptions();
+  }
+})();
