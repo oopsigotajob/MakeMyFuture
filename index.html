@@ -38,10 +38,6 @@
     <button id="logoutBtn">Abmelden</button>
     <button id="gotoAdminBtn">Zum Adminbereich</button>
 
-    <div id="filterSection">
-      <h2>Interessensgebiete</h2>
-      <div id="interessenIcons" class="icon-grid"></div>
-
       <h2>Schulabschluss</h2>
       <div id="abschlussIcons" class="icon-grid"></div>
 
@@ -66,7 +62,8 @@
   <!-- === Admin Panel mit Icons statt Checkboxen === -->
   <div id="adminPanel" class="container hidden">
     <h2>Ausbildungsberuf hinzufügen</h2>
-    <input type="text" id="beschreibung" placeholder="Berufsbezeichnung" />
+    <input type="text" id="berufsbezeichnung" placeholder="Berufsbezeichnung" />
+    <textarea id="beschreibung" placeholder="Beschreibung"></textarea>
     <textarea id="anforderungen" placeholder="Anforderungen"></textarea>
     <input type="number" id="verdienst" placeholder="Verdienst (nach Ausbildung)" />
     <input type="text" id="einsatzorte" placeholder="Einsatzorte" />
@@ -79,9 +76,6 @@
  
     <h3>Interessensgebiete (mehrere möglich)</h3>
     <div id="interessenIconsAdmin" class="icon-grid"></div>
-
-    <h3>Relevante Fächer (mehrere möglich)</h3>
-    <div id="faecherIconsAdmin" class="icon-grid"></div>
 
     <button id="addBerufBtn">Speichern</button>
     <button id="adminLogoutBtn">Abmelden</button>
