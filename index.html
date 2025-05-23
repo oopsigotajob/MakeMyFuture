@@ -32,7 +32,7 @@
 
   <!-- === Benutzer-Startseite mit Filtern === -->
   <div id="startscreen" class="hidden">
-    <img src="logo.png" alt="MakeMyFuture Logo" class="logo">
+    <img src="logo.png" alt="MakeMyFuture Logo" class="logo" />
     <h1>MakeMyFuture</h1>
     <p class="slogan">Oops, I got a Job!</p>
     <button id="logoutBtn">Abmelden</button>
@@ -42,7 +42,7 @@
     <div id="abschlussIcons" class="icon-grid"></div>
 
     <h2>Gehaltsvorstellung</h2>
-    <div id="gehaltIcons" class="icon-grid"></div>
+    <input type="number" id="verdienst" placeholder="Verdienst (nach Ausbildung)" />
 
     <h2>Lieblingsfächer</h2>
     <div id="faecherIcons" class="icon-grid"></div>
@@ -59,26 +59,22 @@
     <button id="adminLoginBtn">Login als Admin</button>
   </div>
 
-  <!-- === Admin Panel === -->
+  <!-- === Admin Panel mit Icons statt Checkboxen === -->
   <div id="adminPanel" class="container hidden">
     <h2>Ausbildungsberuf hinzufügen</h2>
     <input type="text" id="berufsbezeichnung" placeholder="Berufsbezeichnung" />
     <textarea id="beschreibung" placeholder="Beschreibung"></textarea>
     <textarea id="anforderungen" placeholder="Anforderungen"></textarea>
-    <input type="number" id="verdienstAdmin" placeholder="Verdienst (nach Ausbildung)" />
+    <input type="number" id="verdienst" placeholder="Verdienst (nach Ausbildung)" />
     <input type="text" id="einsatzorte" placeholder="Einsatzorte" />
 
     <h3>Schulabschluss (eine Auswahl)</h3>
     <div id="abschlussIconsAdmin" class="icon-grid"></div>
 
-    <h3>Gehaltsbereich (eine Auswahl)</h3>
-    <div id="gehaltsbereichIconsAdmin" class="icon-grid"></div>
+    <!-- Gehaltsbereich entfernt -->
 
     <h3>Interessensgebiete (mehrere möglich)</h3>
     <div id="interessenIconsAdmin" class="icon-grid"></div>
-
-    <h3>Lieblingsfächer (mehrere möglich)</h3>
-    <div id="faecherIconsAdmin" class="icon-grid"></div>
 
     <button id="addBerufBtn">Speichern</button>
     <button id="adminLogoutBtn">Abmelden</button>
