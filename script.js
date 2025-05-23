@@ -219,7 +219,6 @@ document.getElementById("filterBtn").addEventListener("click", async () => {
       <div class="result">
         <strong>${b.beschreibung}</strong><br>
         Abschluss: ${b.abschluesse?.name || '–'}<br>
-        Gehalt: ${b.verdienst} €<br>
         Einsatzorte: ${b.einsatzorte || '–'}
       </div>`).join("")
     : "<p>Keine passenden Berufe gefunden.</p>";
