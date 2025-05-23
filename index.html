@@ -30,7 +30,7 @@
 
   <div id="snackbar"></div>
 
-  <!-- === Benutzer-Startseite mit Filtern === -->
+  <!-- === Benutzer-Startseite mit Swipe-Interessen === -->
   <div id="startscreen" class="hidden">
     <img src="logo.png" alt="MakeMyFuture Logo" class="logo" />
     <h1>MakeMyFuture</h1>
@@ -44,11 +44,20 @@
     <h2>Gehaltsvorstellung</h2>
     <input type="number" id="verdienst" placeholder="Verdienst (nach Ausbildung)" />
 
-    <h2>Lieblingsfächer</h2>
-    <div id="faecherIcons" class="icon-grid"></div>
+    <h2>Wähle deine Interessen per Swipe</h2>
+    <div id="swipeInterestContainer" style="margin: 20px auto; max-width: 300px; position: relative; min-height: 120px;">
+      <!-- Swipe-Icon wird hier dynamisch angezeigt -->
+      <div id="currentInterest" class="icon swipe-icon" style="margin: auto; user-select: none;">
+        <!-- Icon + Text kommen per JS -->
+      </div>
+      <div style="margin-top: 12px; display: flex; justify-content: center; gap: 20px;">
+        <button id="rejectBtn" style="background: #dc3545; color: white; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer;">✗ Ablehnen</button>
+        <button id="acceptBtn" style="background: #28a745; color: white; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer;">✓ Zustimmen</button>
+      </div>
+    </div>
 
-    <button id="filterBtn">Passende Ausbildungsberufe anzeigen</button>
-    <div id="resultList"></div>
+    <button id="filterBtn" style="margin-top: 30px;">Passende Ausbildungsberufe anzeigen</button>
+    <div id="resultList" style="margin-top: 20px;"></div>
   </div>
 
   <!-- === Admin Login === -->
