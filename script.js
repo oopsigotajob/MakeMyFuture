@@ -228,3 +228,158 @@ document.getElementById("filterBtn").addEventListener("click", async () => {
     loadFilterOptions();
   }
 })();
+// --- Swipe-Funktionalität für Interessen ---
+
+// Globale Variablen für die Interest-Swipe-Session
+let swipeInterests = [];
+let currentInterestIndex = 0;
+let likedInterests = [];
+let swipeStartXInterest = null;
+
+// Lädt die verfügbaren Interessen aus der "interessen"-Tabelle in Supabase.
+// Diese Tabelle sollte Spalten wie id, name und optional icon enthalten.
+async function loadSwipeInterests() {
+  const { data, error } = await supabase
+    .from('interessen')
+    .select('id, name, icon');
+
+  if (error) {
+    showMessage("Fehler beim Laden der Interessen: " + error.message, "error");
+    document.getElementById("interestSwipeCard").innerHTML = "<p>Fehler beim Laden der Interessen</p>";
+    return;
+  }
+  swipeInterests = data;
+  currentInterestIndex = 0;
+  if (swipeInterests.length > 0) {
+    displayCurrentInterest();
+  } else {
+    document.getElementById("interestSwipeCard").innerHTML = "<p>Keine Interessen verfügbar</p>";
+  }
+}
+
+// Zeigt den aktuellen Interesse in der Swipe-Karte an.
+function displayCurrentInterest() {
+  const interest = swipeInterests[currentInterestIndex];
+  const card = document.getElementById("interestSwipeCard");
+  card.innerHTML = `
+    <div class="interest-icon">${interest.icon ? interest.icon : ''}</div>
+    <h3>${interest.name}</h3>
+  `;
+}
+
+// Event-Handler: Beginn der Swipe-Geste
+function handleInterestSwipeStart(evt) {
+  swipeStartXInterest = evt.touches ? evt.touches[0].clientX : evt.clientX;
+}
+
+// Event-Handler: Während der Swipe-Geste folgt die Karte der Bewegung.
+function handleInterestSwipeMove(evt) {
+  if (swipeStartXInterest === null) return;
+  const currentX = evt.touches ? evt.touches[0].clientX : evt.clientX;
+  const diffX = currentX - swipeStartXInterest;
+  const card = document.getElementById("interestSwipeCard");
+  card.style.transform = `translateX(${diffX}px) rotate(${diffX / 20}deg)`;
+}
+
+// Event-Handler: Ende der Swipe-Geste – prüfen, ob der Swipe als gültig zählt.
+function handleInterestSwipeEnd(evt) {
+  if (swipeStartXInterest === null) return;
+  const endX = evt.changedTouches ? evt.changedTouches[0].clientX : evt.clientX;
+  const diffX = endX - swipeStartXInterest;
+  const threshold = 100;
+  const card = document.getElementById("interestSwipeCard");
+
+  if (Math.abs(diffX) > threshold) {
+    if (diffX > 0) {
+      // Rechts swipen: Interesse auswählen
+      showMessage("Interesse gewählt: " + swipeInterests[currentInterestIndex].name, "success");
+      likedInterests.push(swipeInterests[currentInterestIndex]);
+    } else {
+      // Links swipen: Interesse überspringen
+      showMessage("Interesse übersprungen: " + swipeInterests[currentInterestIndex].name, "info");
+    }
+    // Animation: Karte fliegt aus dem Sichtfeld
+    card.style.transition = "transform 0.3s ease-out";
+    card.style.transform = `translateX(${diffX > 0 ? 500 : -500}px) rotate(${diffX / 20}deg)`;
+
+    setTimeout(() => {
+      // Zurücksetzen und nächsten Inhalt anzeigen
+      card.style.transition = "";
+      card.style.transform = "";
+      currentInterestIndex++;
+      if (currentInterestIndex < swipeInterests.length) {
+        displayCurrentInterest();
+      } else {
+        card.innerHTML = "<p>Keine weiteren Interessen</p>";
+        // Sobald alle Interessen geswiped wurden, können Jobs zugeordnet werden.
+        matchJobsBasedOnInterests();
+      }
+    }, 300);
+  } else {
+    // Bei zu kurzen Bewegungen: Karte wird zurückgesetzt.
+    card.style.transition = "transform 0.3s ease-out";
+    card.style.transform = "";
+    setTimeout(() => {
+      card.style.transition = "";
+    }, 300);
+  }
+  swipeStartXInterest = null;
+}
+
+// Füge Touch-Eventlistener hinzu (für mobile Geräte)
+const interestSwipeCard = document.getElementById("interestSwipeCard");
+interestSwipeCard.addEventListener("touchstart", handleInterestSwipeStart, false);
+interestSwipeCard.addEventListener("touchmove", handleInterestSwipeMove, false);
+interestSwipeCard.addEventListener("touchend", handleInterestSwipeEnd, false);
+
+// Ergänzend: Unterstützung für Desktop-Geräte (Maus-Events)
+interestSwipeCard.addEventListener("mousedown", handleInterestSwipeStart, false);
+interestSwipeCard.addEventListener("mousemove", handleInterestSwipeMove, false);
+interestSwipeCard.addEventListener("mouseup", handleInterestSwipeEnd, false);
+
+// Ermögliche das Zurückkehren zur Filteransicht.
+document.getElementById("backToFilterBtnInterests").addEventListener("click", () => {
+  document.getElementById("interestSwipeContainer").classList.add("hidden");
+  document.getElementById("startscreen").classList.remove("hidden");
+  // Optional: likedInterests oder den aktuellen Index zurücksetzen.
+});
+
+// Funktion, um den Swipe-Bereich anzuzeigen und die Interessen zu laden.
+function showInterestSwipePage() {
+  document.getElementById("startscreen").classList.add("hidden");
+  document.querySelector(".container").classList.add("hidden");
+  document.getElementById("interestSwipeContainer").classList.remove("hidden");
+  loadSwipeInterests();
+}
+
+// Funktion, die auf Basis der ausgewählten Interessen passende Jobs abruft.
+// Dies ist ein Platzhalter – du kannst die Logik an deine DB-Struktur anpassen.
+async function matchJobsBasedOnInterests() {
+  if (likedInterests.length === 0) {
+    showMessage("Keine Interessen ausgewählt, daher keine zugeordneten Jobs.", "warning");
+    return;
+  }
+  // Erstelle ein Array der IDs der ausgewählten Interessen:
+  const interestIds = likedInterests.map(interest => interest.id);
+  showMessage("Deine Interessen: " + likedInterests.map(interest => interest.name).join(", "), "success");
+  
+  // Beispielhafte Abfrage: Hole Jobs, die mindestens eines der gewählten Interessen zugeordnet sind.
+  // Passe 'jobs' und 'interesse_id' an deine Tabellenstruktur an.
+  const { data, error } = await supabase
+    .from('jobs')
+    .select('*')
+    .in('interesse_id', interestIds);
+  
+  if (error) {
+    showMessage("Fehler beim Abrufen der Jobs: " + error.message, "error");
+    return;
+  }
+  
+  if (data.length > 0) {
+    // Hier könntest du dann den UI-Bereich für die Job-Ergebnisse anzeigen.
+    console.log("Gefundene Jobs:", data);
+    // Alternativ: showJobsResults(data);
+  } else {
+    showMessage("Keine Jobs gefunden, die zu deinen Interessen passen.", "info");
+  }
+}
