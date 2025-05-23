@@ -134,6 +134,7 @@ async function loadAdminIconGrids() {
 
 // === Admin: Beruf speichern ===
 document.getElementById("addBerufBtn").addEventListener("click", async () => {
+  const berufsbezeichnung = document.getElementById("berufsbezeichnung").value;
   const beschreibung = document.getElementById("beschreibung").value;
   const anforderungen = document.getElementById("anforderungen").value;
   const verdienst = parseInt(document.getElementById("verdienst").value);
@@ -146,10 +147,12 @@ document.getElementById("addBerufBtn").addEventListener("click", async () => {
 
   if (!beschreibung || !abschluss_id || !gehaltsbereich_id) {
     showMessage("Bitte mindestens Beschreibung, Abschluss und Gehalt wählen", "error");
+
     return;
   }
 
   const { error } = await supabase.from("ausbildungsberufe").insert({
+    berufbezeichnung,
     beschreibung,
     anforderungen,
     verdienst,
@@ -164,6 +167,7 @@ document.getElementById("addBerufBtn").addEventListener("click", async () => {
     showMessage("Fehler: " + error.message, "error");
   } else {
     showMessage("Beruf gespeichert", "success");
+    document.getElementById("berufsbezeichnung").value = "";
     document.getElementById("beschreibung").value = "";
     document.getElementById("anforderungen").value = "";
     document.getElementById("verdienst").value = "";
@@ -195,7 +199,7 @@ document.getElementById("filterBtn").addEventListener("click", async () => {
   const faecherIds = getSelectedMultipleIds("faecherIcons");
 
   let query = supabase.from("ausbildungsberufe").select(`
-    id, beschreibung, verdienst, einsatzorte, anforderungen,
+    id, berufsbezeichnung, beschreibung, verdienst, einsatzorte, anforderungen,
     abschluesse(name), gehaltsbereiche(label),
     interessen_ids, faecher_ids
   `);
@@ -217,7 +221,7 @@ document.getElementById("filterBtn").addEventListener("click", async () => {
   out.innerHTML = data.length
     ? data.map(b => `
       <div class="result">
-        <strong>${b.beschreibung}</strong><br>
+        <strong>${b.berufsbezeichnungen}</strong><br>
         Abschluss: ${b.abschluesse?.name || '–'}<br>
         Einsatzorte: ${b.einsatzorte || '–'}
       </div>`).join("")
