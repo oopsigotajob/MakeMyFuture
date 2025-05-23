@@ -119,15 +119,13 @@ function getSelectedSingleId(containerId) {
 
 // === Admin: Icons laden ===
 async function loadAdminIconGrids() {
-  const [abschluesse, gehaltsbereiche, interessen, faecher] = await Promise.all([
+  const [abschluesse, interessen, faecher] = await Promise.all([
     supabase.from("abschluesse").select("*").then(r => r.data || []),
-    supabase.from("gehaltsbereiche").select("*").then(r => r.data || []),
     supabase.from("interessen").select("*").then(r => r.data || []),
     supabase.from("faecher").select("*").then(r => r.data || [])
   ]);
 
   fillIconGrid("abschlussIconsAdmin", abschluesse, x => x.name, false);
-  fillIconGrid("gehaltsbereichIconsAdmin", gehaltsbereiche, x => x.label, false);
   fillIconGrid("interessenIconsAdmin", interessen);
   fillIconGrid("faecherIconsAdmin", faecher);
 }
@@ -135,18 +133,17 @@ async function loadAdminIconGrids() {
 // === Admin: Beruf speichern ===
 document.getElementById("addBerufBtn").addEventListener("click", async () => {
   const berufsbezeichnung = document.getElementById("berufsbezeichnung").value;
-  const beschreibung = document.getElementById("adminBeschreibung").value;
-  const anforderungen = document.getElementById("adminAnforderungen").value;
-  const verdienst = parseInt(document.getElementById("adminVerdienst").value);
-  const einsatzorte = document.getElementById("adminEinsatzorte").value;
+  const beschreibung = document.getElementById("beschreibung").value;
+  const anforderungen = document.getElementById("anforderungen").value;
+  const verdienst = parseInt(document.getElementById("verdienst").value);
+  const einsatzorte = document.getElementById("einsatzorte").value;
 
   const abschluss_id = getSelectedSingleId("abschlussIconsAdmin");
-  const gehaltsbereich_id = getSelectedSingleId("gehaltsbereichIconsAdmin");
   const interessen_ids = getSelectedMultipleIds("interessenIconsAdmin");
   const faecher_ids = getSelectedMultipleIds("faecherIconsAdmin");
 
-  if (!beschreibung || !abschluss_id || !gehaltsbereich_id) {
-    showMessage("Bitte mindestens Beschreibung, Abschluss und Gehalt wählen", "error");
+  if (!beschreibung || !abschluss_id) {
+    showMessage("Bitte mindestens Beschreibung und Abschluss wählen", "error");
     return;
   }
 
@@ -157,7 +154,6 @@ document.getElementById("addBerufBtn").addEventListener("click", async () => {
     verdienst,
     einsatzorte,
     abschluss_id,
-    gehaltsbereich_id,
     interessen_ids,
     faecher_ids
   });
@@ -167,26 +163,24 @@ document.getElementById("addBerufBtn").addEventListener("click", async () => {
   } else {
     showMessage("Beruf gespeichert", "success");
     document.getElementById("berufsbezeichnung").value = "";
-    document.getElementById("adminBeschreibung").value = "";
-    document.getElementById("adminAnforderungen").value = "";
-    document.getElementById("adminVerdienst").value = "";
-    document.getElementById("adminEinsatzorte").value = "";
+    document.getElementById("beschreibung").value = "";
+    document.getElementById("anforderungen").value = "";
+    document.getElementById("verdienst").value = "";
+    document.getElementById("einsatzorte").value = "";
     document.querySelectorAll("#adminPanel .icon.selected").forEach(el => el.classList.remove("selected"));
   }
 });
 
 // === Benutzer: Filter laden & anzeigen ===
 async function loadFilterOptions() {
-  const [interessen, abschluesse, gehaltsbereiche, faecher] = await Promise.all([
+  const [interessen, abschluesse, faecher] = await Promise.all([
     supabase.from("interessen").select("*").then(r => r.data || []),
     supabase.from("abschluesse").select("*").then(r => r.data || []),
-    supabase.from("gehaltsbereiche").select("*").then(r => r.data || []),
     supabase.from("faecher").select("*").then(r => r.data || [])
   ]);
 
   fillIconGrid("interessenIcons", interessen);
   fillIconGrid("abschlussIcons", abschluesse, x => x.name, false);
-  fillIconGrid("gehaltIcons", gehaltsbereiche, x => x.label, false);
   fillIconGrid("faecherIcons", faecher);
 }
 
@@ -194,19 +188,17 @@ async function loadFilterOptions() {
 document.getElementById("filterBtn").addEventListener("click", async () => {
   const interessenIds = getSelectedMultipleIds("interessenIcons");
   const abschlussId = getSelectedSingleId("abschlussIcons");
-  const gehaltId = getSelectedSingleId("gehaltIcons");
   const faecherIds = getSelectedMultipleIds("faecherIcons");
 
   let query = supabase.from("ausbildungsberufe").select(`
     id, berufsbezeichnung, beschreibung, verdienst, einsatzorte, anforderungen,
-    abschluesse(name), gehaltsbereiche(label),
+    abschluesse(name),
     interessen_ids, faecher_ids
   `);
 
   if (interessenIds.length) query = query.overlaps("interessen_ids", interessenIds);
   if (faecherIds.length) query = query.overlaps("faecher_ids", faecherIds);
   if (abschlussId) query = query.eq("abschluss_id", abschlussId);
-  if (gehaltId) query = query.eq("gehaltsbereich_id", gehaltId);
 
   const { data, error } = await query;
   const out = document.getElementById("resultList");
