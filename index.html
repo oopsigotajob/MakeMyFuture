@@ -38,17 +38,17 @@
     <button id="logoutBtn">Abmelden</button>
     <button id="gotoAdminBtn">Zum Adminbereich</button>
 
-      <h2>Schulabschluss</h2>
-      <div id="abschlussIcons" class="icon-grid"></div>
+    <h2>Schulabschluss</h2>
+    <div id="abschlussIcons" class="icon-grid"></div>
 
-      <h2>Gehaltsvorstellung</h2>
-      <input type="number" id="verdienst" placeholder="Verdienst (nach Ausbildung)" />
-      <h2>Lieblingsfächer</h2>
-      <div id="faecherIcons" class="icon-grid"></div>
+    <h2>Gehaltsvorstellung</h2>
+    <div id="gehaltIcons" class="icon-grid"></div>
 
-      <button id="filterBtn">Passende Ausbildungsberufe anzeigen</button>
-      <div id="resultList"></div>
-    </div>
+    <h2>Lieblingsfächer</h2>
+    <div id="faecherIcons" class="icon-grid"></div>
+
+    <button id="filterBtn">Passende Ausbildungsberufe anzeigen</button>
+    <div id="resultList"></div>
   </div>
 
   <!-- === Admin Login === -->
@@ -59,23 +59,26 @@
     <button id="adminLoginBtn">Login als Admin</button>
   </div>
 
-  <!-- === Admin Panel mit Icons statt Checkboxen === -->
+  <!-- === Admin Panel === -->
   <div id="adminPanel" class="container hidden">
     <h2>Ausbildungsberuf hinzufügen</h2>
     <input type="text" id="berufsbezeichnung" placeholder="Berufsbezeichnung" />
     <textarea id="beschreibung" placeholder="Beschreibung"></textarea>
     <textarea id="anforderungen" placeholder="Anforderungen"></textarea>
-    <input type="number" id="verdienst" placeholder="Verdienst (nach Ausbildung)" />
+    <input type="number" id="verdienstAdmin" placeholder="Verdienst (nach Ausbildung)" />
     <input type="text" id="einsatzorte" placeholder="Einsatzorte" />
 
     <h3>Schulabschluss (eine Auswahl)</h3>
     <div id="abschlussIconsAdmin" class="icon-grid"></div>
 
     <h3>Gehaltsbereich (eine Auswahl)</h3>
-    <input type="number" id="verdienst" placeholder="Verdienst (nach Ausbildung)" />
- 
+    <div id="gehaltsbereichIconsAdmin" class="icon-grid"></div>
+
     <h3>Interessensgebiete (mehrere möglich)</h3>
     <div id="interessenIconsAdmin" class="icon-grid"></div>
+
+    <h3>Lieblingsfächer (mehrere möglich)</h3>
+    <div id="faecherIconsAdmin" class="icon-grid"></div>
 
     <button id="addBerufBtn">Speichern</button>
     <button id="adminLogoutBtn">Abmelden</button>
