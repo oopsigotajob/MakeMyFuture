@@ -1,92 +1,83 @@
-const icons = [
-  { id: 'technik', emoji: '⚙️', label: 'Technik' },
-  { id: 'kreativ', emoji: '🎨', label: 'Kreativ' },
-  { id: 'kommunikation', emoji: '💬', label: 'Kommunikation' },
-  { id: 'natur', emoji: '🌿', label: 'Natur' },
-  { id: 'zahlen', emoji: '🔢', label: 'Zahlen' },
-  { id: 'hilfe', emoji: '🤝', label: 'Hilfe' },
-];
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-const berufe = [
-  { name: 'Ingenieur', icons: ['technik', 'zahlen'] },
-  { name: 'Grafikdesigner', icons: ['kreativ'] },
-  { name: 'Journalist', icons: ['kommunikation'] },
-  { name: 'Förster', icons: ['natur'] },
-  { name: 'Buchhalter', icons: ['zahlen'] },
-  { name: 'Sozialarbeiter', icons: ['hilfe'] },
-  { name: 'Softwareentwickler', icons: ['technik', 'zahlen'] },
-  { name: 'Lehrer', icons: ['kommunikation', 'hilfe'] },
-];
+const supabase = createClient(
+  'https://vedcigedhjkarkcbqvtf.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZGNpZ2VkaGprYXJrY2JxdnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMjI3NjUsImV4cCI6MjA2Mjc5ODc2NX0.Q7By1dg4FFZrA6UPWYVGHJinydzltjlpW3riruZTPXA'
+);
 
-let currentIndex = 0;
-const likedIcons = new Set();
-const dislikedIcons = new Set();
-
-const swipeContainer = document.getElementById('swipe-container');
-const likeBtn = document.getElementById('like-btn');
-const dislikeBtn = document.getElementById('dislike-btn');
-const resultContainer = document.getElementById('result-container');
-const resultList = document.getElementById('result-list');
-
-function createCard(icon) {
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.dataset.id = icon.id;
-  card.innerHTML = `
-    <div style="font-size: 4rem;">${icon.emoji}</div>
-    <h2>${icon.label}</h2>
-  `;
-  return card;
+function showMessage(text, type) {
+  const sb = document.getElementById("snackbar");
+  sb.textContent = text;
+  sb.className = `${type} show`;
+  setTimeout(() => (sb.className = ""), 3000);
 }
 
-function showNextCard() {
-  swipeContainer.innerHTML = '';
-  if (currentIndex >= icons.length) {
-    showResults();
-    return;
-  }
-  const card = createCard(icons[currentIndex]);
-  swipeContainer.appendChild(card);
-}
+// === Registrierung & Login ===
+document.getElementById("registerBtn").addEventListener("click", async () => {
+  const email = document.getElementById("registerEmail").value;
+  const password = document.getElementById("registerPassword").value;
+  const name = document.getElementById("name").value;
 
-function showResults() {
-  swipeContainer.style.display = 'none';
-  likeBtn.style.display = 'none';
-  dislikeBtn.style.display = 'none';
-  resultContainer.style.display = 'block';
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { name }, emailRedirectTo: window.location.href }
+  });
 
-  // Matching: Zeige Berufe, die mindestens ein geliktes Icon enthalten
-  const matchedBerufe = berufe.filter(beruf =>
-    beruf.icons.some(iconId => likedIcons.has(iconId))
+  showMessage(
+    error ? "Registrierung fehlgeschlagen: " + error.message : "Registrierung erfolgreich! Bitte E-Mail bestätigen.",
+    error ? "error" : "success"
   );
+});
 
-  if (matchedBerufe.length === 0) {
-    resultList.innerHTML = '<li>Keine passenden Berufe gefunden.</li>';
+document.getElementById("loginBtn").addEventListener("click", async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    showMessage("Login fehlgeschlagen: " + error.message, "error");
   } else {
-    resultList.innerHTML = '';
-    matchedBerufe.forEach(beruf => {
-      const li = document.createElement('li');
-      li.textContent = beruf.name;
-      resultList.appendChild(li);
-    });
-  }
-}
-
-likeBtn.addEventListener('click', () => {
-  if (currentIndex < icons.length) {
-    likedIcons.add(icons[currentIndex].id);
-    currentIndex++;
-    showNextCard();
+    showMessage("Login erfolgreich!", "success");
+    setTimeout(() => {
+      document.getElementById("startscreen").classList.remove("hidden");
+      document.querySelector(".container").classList.add("hidden");
+      loadFilterOptions();
+      initSwipeInteressen();
+    }, 1000);
   }
 });
 
-dislikeBtn.addEventListener('click', () => {
-  if (currentIndex < icons.length) {
-    dislikedIcons.add(icons[currentIndex].id);
-    currentIndex++;
-    showNextCard();
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  await supabase.auth.signOut();
+  location.reload();
+});
+
+// === Admin Login ===
+const adminCredentials = { username: "admin", password: "geheim123" };
+
+document.getElementById("gotoAdminBtn").addEventListener("click", () => {
+  document.getElementById("startscreen").classList.add("hidden");
+  document.getElementById("adminLoginSection").classList.remove("hidden");
+});
+
+document.getElementById("adminLoginBtn").addEventListener("click", () => {
+  const user = document.getElementById("adminUser").value;
+  const pass = document.getElementById("adminPass").value;
+
+  if (user === adminCredentials.username && pass === adminCredentials.password) {
+    document.getElementById("adminLoginSection").classList.add("hidden");
+    document.getElementById("adminPanel").classList.remove("hidden");
+    showMessage("Admin eingeloggt", "success");
+    loadAdminIconGrids();
+  } else {
+    showMessage("Falsche Admin-Daten", "error");
   }
 });
 
-// Starte mit der ersten Karte
-showNextCard();
+document.getElementById("adminLogoutBtn").addEventListener("click", () => {
+  document.getElementById("adminPanel").classList.add("hidden");
+  document.getElementById("adminLoginSection").classList.add("hidden");
+  document.querySelector(".container").classList.remove("hidden");
+  show
