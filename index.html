@@ -3,84 +3,270 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MakeMyFuture</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>MakeMyFuture - Swipe Interessen</title>
+  <style>
+    /* Einfaches Styling */
+    .hidden { display: none; }
+    #snackbar {
+      visibility: hidden;
+      min-width: 250px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 2px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1;
+      left: 50%;
+      bottom: 30px;
+      font-size: 17px;
+      transform: translateX(-50%);
+    }
+    #snackbar.show {
+      visibility: visible;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+    #snackbar.success { background-color: #4CAF50; }
+    #snackbar.error { background-color: #f44336; }
+
+    @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
+    @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
+
+    button {
+      margin: 0 10px;
+      padding: 10px 20px;
+      font-size: 1.2em;
+      cursor: pointer;
+    }
+    #interessenIcons {
+      font-size: 4em;
+      margin: 20px 0;
+    }
+    #berufsergebnisse {
+      margin-top: 30px;
+      font-size: 1.3em;
+    }
+  </style>
 </head>
 <body>
-  <!-- === Benutzerbereich === -->
+
   <div class="container">
-    <img src="logo.png" alt="Logo" class="logo" />
-    <h2>Registrierung & Anmeldung</h2>
+    <!-- Registrierung -->
+    <section id="registerSection">
+      <h2>Registrieren</h2>
+      <input type="text" id="name" placeholder="Name" /><br/>
+      <input type="email" id="registerEmail" placeholder="E-Mail" /><br/>
+      <input type="password" id="registerPassword" placeholder="Passwort" /><br/>
+      <button id="registerBtn">Registrieren</button>
+    </section>
 
-    <div id="registerSection">
-      <input type="text" id="name" placeholder="Name" required />
-      <input type="email" id="registerEmail" placeholder="E-Mail" required />
-      <input type="password" id="registerPassword" placeholder="Passwort" required />
-      <button id="registerBtn">Jetzt registrieren</button>
-    </div>
-
-    <hr />
-
-    <div id="loginSection">
-      <input type="email" id="email" placeholder="E-Mail" required />
-      <input type="password" id="password" placeholder="Passwort" required />
+    <!-- Login -->
+    <section id="loginSection">
+      <h2>Login</h2>
+      <input type="email" id="email" placeholder="E-Mail" /><br/>
+      <input type="password" id="password" placeholder="Passwort" /><br/>
       <button id="loginBtn">Login</button>
-    </div>
+    </section>
   </div>
 
+  <!-- Startscreen (nach Login) -->
+  <div id="startscreen" class="hidden">
+    <h2>Swipe deine Interessen</h2>
+    <div id="interessenIcons">❓</div>
+    <div id="interessen">Wird geladen...</div>
+    <button id="acceptBtn">👍</button>
+    <button id="rejectBtn">👎</button>
+
+    <div id="berufsergebnisse"></div>
+
+    <button id="logoutBtn">Logout</button>
+    <button id="gotoAdminBtn">Admin Login</button>
+  </div>
+
+  <!-- Admin Login -->
+  <section id="adminLoginSection" class="hidden">
+    <h2>Admin Login</h2>
+    <input type="text" id="adminUser" placeholder="Benutzername" /><br/>
+    <input type="password" id="adminPass" placeholder="Passwort" /><br/>
+    <button id="adminLoginBtn">Login</button>
+  </section>
+
+  <!-- Admin Panel -->
+  <section id="adminPanel" class="hidden">
+    <h2>Admin Panel</h2>
+    <!-- Hier kannst du deine Admin-Funktionen einbauen -->
+    <button id="adminLogoutBtn">Admin Logout</button>
+  </section>
+
+  <!-- Snackbar -->
   <div id="snackbar"></div>
 
-  <!-- === Benutzer-Startseite mit Swipe-Interessen === -->
-  <div id="startscreen" class="hidden">
-    <img src="logo.png" alt="MakeMyFuture Logo" class="logo" />
-    <h1>MakeMyFuture</h1>
-    <p class="slogan">Oops, I got a Job!</p>
-    <button id="logoutBtn">Abmelden</button>
-    <button id="gotoAdminBtn">Zum Adminbereich</button>
+  <!-- Script -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-    <h2>Wähle deine Interessen per Swipe</h2>
-    <div id="swipeInterestContainer" style="margin: 20px auto; max-width: 300px; position: relative; min-height: 150px; border: 1px solid #ccc; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-      <!-- Aktuelles Icon + Text -->
-      <div id="currentInterest" class="icon swipe-icon" style="font-size: 5rem; user-select: none;">❓</div>
-      <div id="currentInterestLabel" style="font-size: 1.2rem; margin-top: 10px; font-weight: bold;">Lade...</div>
+    const supabase = createClient(
+      'https://vedcigedhjkarkcbqvtf.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZGNpZ2VkaGprYXJrY2JxdnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMjI3NjUsImV4cCI6MjA2Mjc5ODc2NX0.Q7By1dg4FFZrA6UPWYVGHJinydzltjlpW3riruZTPXA'
+    );
 
-      <div style="margin-top: 12px; display: flex; justify-content: center; gap: 20px;">
-        <button id="rejectBtn" style="background: #dc3545; color: white; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer;">✗ Ablehnen</button>
-        <button id="acceptBtn" style="background: #28a745; color: white; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer;">✓ Zustimmen</button>
-      </div>
-    </div>
+    function showMessage(text, type = 'success') {
+      const sb = document.getElementById('snackbar');
+      sb.textContent = text;
+      sb.className = `${type} show`;
+      setTimeout(() => (sb.className = ''), 3000);
+    }
 
-    <button id="filterBtn" style="margin-top: 30px;">Passende Ausbildungsberufe anzeigen</button>
-    <div id="resultList" style="margin-top: 20px;"></div>
-  </div>
+    document.getElementById('registerBtn').onclick = async () => {
+      const email = document.getElementById('registerEmail').value;
+      const password = document.getElementById('registerPassword').value;
+      const name = document.getElementById('name').value;
 
-  <!-- === Admin Login === -->
-  <div id="adminLoginSection" class="container hidden">
-    <h2>Admin Login</h2>
-    <input type="text" id="adminUser" placeholder="Benutzername" />
-    <input type="password" id="adminPass" placeholder="Passwort" />
-    <button id="adminLoginBtn">Login als Admin</button>
-  </div>
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { name }, emailRedirectTo: window.location.href }
+      });
+      showMessage(error ? 'Registrierung fehlgeschlagen: ' + error.message : 'Registrierung erfolgreich! Bitte E-Mail bestätigen.', error ? 'error' : 'success');
+    };
 
-  <!-- === Admin Panel mit Icons statt Checkboxen === -->
-  <div id="adminPanel" class="container hidden">
-    <h2>Ausbildungsberuf hinzufügen</h2>
-    <input type="text" id="berufsbezeichnung" placeholder="Berufsbezeichnung" />
-    <textarea id="beschreibung" placeholder="Beschreibung"></textarea>
-    <textarea id="anforderungen" placeholder="Anforderungen"></textarea>
-    <input type="number" id="verdienst" placeholder="Verdienst (nach Ausbildung)" />
-    <input type="text" id="einsatzorte" placeholder="Einsatzorte" />
+    document.getElementById('loginBtn').onclick = async () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
-    <h3>Schulabschluss (eine Auswahl)</h3>
-    <div id="abschlussIconsAdmin" class="icon-grid"></div>
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) return showMessage('Login fehlgeschlagen: ' + error.message, 'error');
 
-    <h3>Interessensgebiete (mehrere möglich)</h3>
-    <div id="interessenIconsAdmin" class="icon-grid"></div>
+      showMessage('Login erfolgreich!');
+      setTimeout(async () => {
+        document.getElementById('startscreen').classList.remove('hidden');
+        document.querySelector('.container').classList.add('hidden');
+        loadFilterOptions();
+        await initSwipeInteressen();
+      }, 800);
+    };
 
-    <button id="addBerufBtn">Speichern</button>
-    <button id="adminLogoutBtn">Abmelden</button>
-  </div>
+    document.getElementById('logoutBtn').onclick = async () => {
+      await supabase.auth.signOut();
+      location.reload();
+    };
 
-  <script type="module" src="script.js"></script>
+    let swipeInteressen = [];
+    let swipeIdx = 0;
+    let currentUserId = null;
+
+    const curIcon = document.getElementById('interessenIcons');
+    const curLabel = document.getElementById('interessen');
+    const acceptBtn = document.getElementById('acceptBtn');
+    const rejectBtn = document.getElementById('rejectBtn');
+    const berufsergebnisse = document.getElementById('berufsergebnisse');
+
+    async function initSwipeInteressen() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+      currentUserId = session.user.id;
+
+      const { data, error } = await supabase.from('interessen').select('*');
+      if (error || !data?.length) {
+        curLabel.textContent = 'Fehler beim Laden ❌';
+        curIcon.textContent = '⚠️';
+        acceptBtn.disabled = rejectBtn.disabled = true;
+        return;
+      }
+
+      swipeInteressen = data;
+      swipeIdx = 0;
+      showNextInterest();
+    }
+
+    function showNextInterest() {
+      if (swipeIdx >= swipeInteressen.length) {
+        curIcon.textContent = '🎉';
+        curLabel.textContent = 'Alle Interessen bewertet!';
+        acceptBtn.style.display = rejectBtn.style.display = 'none';
+        showTopBeruf();
+        return;
+      }
+
+      const cur = swipeInteressen[swipeIdx];
+      curIcon.innerHTML = cur.icon || '❓';
+      curLabel.textContent = cur.name;
+      curIcon.dataset.id = cur.id;
+    }
+
+    acceptBtn.addEventListener('click', () => handleChoice('zugestimmt'));
+    rejectBtn.addEventListener('click', () => handleChoice('abgelehnt'));
+
+    async function handleChoice(status) {
+      const interesseId = Number(curIcon.dataset.id);
+      await supabase.from('user_interessen').upsert(
+        { user_id: currentUserId, interessen_id: interesseId, status },
+        { onConflict: ['user_id', 'interessen_id'] }
+      );
+      swipeIdx++;
+      showNextInterest();
+    }
+
+    async function showTopBeruf() {
+      const { data: matches, error } = await supabase
+        .rpc('berufe_mit_interessen_match', { user_id: currentUserId });
+
+      if (error || !matches || matches.length === 0) {
+        berufsergebnisse.innerHTML = `<p>Keine passenden Berufe gefunden ❌</p>`;
+        return;
+      }
+
+      const topBeruf = matches[0];
+      berufsergebnisse.innerHTML = `
+        <h3>Top-Beruf für dich:</h3>
+        <p><strong>${topBeruf.name}</strong> (${topBeruf.match_count} Übereinstimmungen)</p>
+      `;
+    }
+
+    // Admin-Login
+    const adminCredentials = { username: 'admin', password: 'geheim123' };
+    document.getElementById('gotoAdminBtn').onclick = () => {
+      document.getElementById('startscreen').classList.add('hidden');
+      document.getElementById('adminLoginSection').classList.remove('hidden');
+    };
+    document.getElementById('adminLoginBtn').onclick = () => {
+      const u = document.getElementById('adminUser').value;
+      const p = document.getElementById('adminPass').value;
+      if (u === adminCredentials.username && p === adminCredentials.password) {
+        document.getElementById('adminLoginSection').classList.add('hidden');
+        document.getElementById('adminPanel').classList.remove('hidden');
+        showMessage('Admin eingeloggt');
+        loadAdminIconGrids();
+      } else {
+        showMessage('Falsche Admin-Daten', 'error');
+      }
+    };
+    document.getElementById('adminLogoutBtn').onclick = () => {
+      document.getElementById('adminPanel').classList.add('hidden');
+      document.getElementById('adminLoginSection').classList.add('hidden');
+      document.querySelector('.container').classList.remove('hidden');
+      showMessage('Admin abgemeldet');
+    };
+
+    // Auto-Login
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        document.getElementById('startscreen').classList.remove('hidden');
+        document.querySelector('.container').classList.add('hidden');
+        loadFilterOptions();
+        await initSwipeInteressen();
+      }
+    })();
+
+    // Platzhalter: loadFilterOptions und loadAdminIconGrids
+    function loadFilterOptions() {
+      // Deine Filter-Logik hier (falls benötigt)
+    }
+    function loadAdminIconGrids() {
+      // Deine Admin-Logik hier (falls benötigt)
+    }
+  </script>
+
 </body>
 </html>
