@@ -3,69 +3,84 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Berufe Swipe Auswahl</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 400px;
-      margin: 2rem auto;
-      text-align: center;
-    }
-    #swipe-container {
-      margin-bottom: 1rem;
-      min-height: 200px;
-      border: 2px solid #ccc;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      padding: 1rem;
-    }
-    .card {
-      user-select: none;
-    }
-    button {
-      font-size: 1.5rem;
-      margin: 0 1rem;
-      padding: 0.5rem 1rem;
-      cursor: pointer;
-      border-radius: 5px;
-      border: none;
-      background-color: #007BFF;
-      color: white;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #0056b3;
-    }
-    #result-container {
-      display: none;
-      text-align: left;
-    }
-    #result-list {
-      margin-top: 1rem;
-      padding-left: 1.2rem;
-    }
-  </style>
+  <title>MakeMyFuture</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- === Benutzerbereich === -->
+  <div class="container">
+    <img src="logo.png" alt="Logo" class="logo" />
+    <h2>Registrierung & Anmeldung</h2>
 
-  <h1>Welche Interessen hast Du?</h1>
+    <div id="registerSection">
+      <input type="text" id="name" placeholder="Name" required />
+      <input type="email" id="registerEmail" placeholder="E-Mail" required />
+      <input type="password" id="registerPassword" placeholder="Passwort" required />
+      <button id="registerBtn">Jetzt registrieren</button>
+    </div>
 
-  <div id="swipe-container"></div>
+    <hr />
 
-  <div>
-    <button id="dislike-btn">👎</button>
-    <button id="like-btn">👍</button>
+    <div id="loginSection">
+      <input type="email" id="email" placeholder="E-Mail" required />
+      <input type="password" id="password" placeholder="Passwort" required />
+      <button id="loginBtn">Login</button>
+    </div>
   </div>
 
-  <div id="result-container">
-    <h2>Passende Berufe für Dich:</h2>
-    <ul id="result-list"></ul>
+  <div id="snackbar"></div>
+
+  <!-- === Benutzer-Startseite mit Swipe-Interessen === -->
+  <div id="startscreen" class="hidden">
+    <img src="logo.png" alt="MakeMyFuture Logo" class="logo" />
+    <h1>MakeMyFuture</h1>
+    <p class="slogan">Oops, I got a Job!</p>
+    <button id="logoutBtn">Abmelden</button>
+    <button id="gotoAdminBtn">Zum Adminbereich</button>
+
+    <h2>Wähle deine Interessen per Swipe</h2>
+    <div id="swipeInterestContainer" style="margin: 20px auto; max-width: 300px; position: relative; min-height: 150px; border: 1px solid #ccc; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <!-- Aktuelles Icon + Text -->
+      <div id="currentInterest" class="icon swipe-icon" style="font-size: 5rem; user-select: none;">❓</div>
+      <div id="currentInterestLabel" style="font-size: 1.2rem; margin-top: 10px; font-weight: bold;">Lade...</div>
+
+      <div style="margin-top: 12px; display: flex; justify-content: center; gap: 20px;">
+        <button id="rejectBtn" style="background: #dc3545; color: white; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer;">✗ Ablehnen</button>
+        <button id="acceptBtn" style="background: #28a745; color: white; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer;">✓ Zustimmen</button>
+      </div>
+    </div>
+
+    <button id="filterBtn" style="margin-top: 30px;">Passende Ausbildungsberufe anzeigen</button>
+    <div id="resultList" style="margin-top: 20px;"></div>
   </div>
 
-  <script src="script.js"></script>
+  <!-- === Admin Login === -->
+  <div id="adminLoginSection" class="container hidden">
+    <h2>Admin Login</h2>
+    <input type="text" id="adminUser" placeholder="Benutzername" />
+    <input type="password" id="adminPass" placeholder="Passwort" />
+    <button id="adminLoginBtn">Login als Admin</button>
+  </div>
 
+  <!-- === Admin Panel mit Icons statt Checkboxen === -->
+  <div id="adminPanel" class="container hidden">
+    <h2>Ausbildungsberuf hinzufügen</h2>
+    <input type="text" id="berufsbezeichnung" placeholder="Berufsbezeichnung" />
+    <textarea id="beschreibung" placeholder="Beschreibung"></textarea>
+    <textarea id="anforderungen" placeholder="Anforderungen"></textarea>
+    <input type="number" id="verdienst" placeholder="Verdienst (nach Ausbildung)" />
+    <input type="text" id="einsatzorte" placeholder="Einsatzorte" />
+
+    <h3>Schulabschluss (eine Auswahl)</h3>
+    <div id="abschlussIconsAdmin" class="icon-grid"></div>
+
+    <h3>Interessensgebiete (mehrere möglich)</h3>
+    <div id="interessenIconsAdmin" class="icon-grid"></div>
+
+    <button id="addBerufBtn">Speichern</button>
+    <button id="adminLogoutBtn">Abmelden</button>
+  </div>
+
+  <script type="module" src="script.js"></script>
 </body>
 </html>
