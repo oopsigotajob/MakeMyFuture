@@ -2,106 +2,48 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MakeMyFuture - Swipe Interessen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Berufswahl-Spiel</title>
   <style>
-    /* Einfaches Styling */
+    body { font-family: Arial, sans-serif; background: #f0f0f0; margin: 0; padding: 0; text-align: center; }
     .hidden { display: none; }
-    #snackbar {
-      visibility: hidden;
-      min-width: 250px;
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      border-radius: 2px;
-      padding: 16px;
-      position: fixed;
-      z-index: 1;
-      left: 50%;
-      bottom: 30px;
-      font-size: 17px;
-      transform: translateX(-50%);
-    }
-    #snackbar.show {
-      visibility: visible;
-      animation: fadein 0.5s, fadeout 0.5s 2.5s;
-    }
-    #snackbar.success { background-color: #4CAF50; }
-    #snackbar.error { background-color: #f44336; }
-
+    .container { max-width: 600px; margin: 40px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    #snackbar { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 1; left: 50%; bottom: 30px; transform: translateX(-50%); }
+    #snackbar.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
     @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
     @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
-
-    button {
-      margin: 0 10px;
-      padding: 10px 20px;
-      font-size: 1.2em;
-      cursor: pointer;
-    }
-    #interessenIcons {
-      font-size: 4em;
-      margin: 20px 0;
-    }
-    #berufsergebnisse {
-      margin-top: 30px;
-      font-size: 1.3em;
-    }
+    button { margin: 5px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
   </style>
 </head>
 <body>
-
   <div class="container">
-    <!-- Registrierung -->
-    <section id="registerSection">
+    <div id="snackbar"></div>
+
+    <div id="authSection">
       <h2>Registrieren</h2>
-      <input type="text" id="name" placeholder="Name" /><br/>
-      <input type="email" id="registerEmail" placeholder="E-Mail" /><br/>
-      <input type="password" id="registerPassword" placeholder="Passwort" /><br/>
+      <input type="text" id="name" placeholder="Name" /><br />
+      <input type="email" id="registerEmail" placeholder="E-Mail" /><br />
+      <input type="password" id="registerPassword" placeholder="Passwort" /><br />
       <button id="registerBtn">Registrieren</button>
-    </section>
 
-    <!-- Login -->
-    <section id="loginSection">
       <h2>Login</h2>
-      <input type="email" id="email" placeholder="E-Mail" /><br/>
-      <input type="password" id="password" placeholder="Passwort" /><br/>
+      <input type="email" id="email" placeholder="E-Mail" /><br />
+      <input type="password" id="password" placeholder="Passwort" /><br />
       <button id="loginBtn">Login</button>
-    </section>
+    </div>
+
+    <div id="startscreen" class="hidden">
+      <h2>Willkommen!</h2>
+      <p id="interessen">Interesse</p>
+      <div id="interessenIcons" style="font-size: 48px;"></div>
+      <button id="acceptBtn">Gefällt mir</button>
+      <button id="rejectBtn">Weiter</button><br /><br />
+      <button id="logoutBtn">Logout</button>
+
+      <div id="berufsergebnisse"></div>
+    </div>
   </div>
 
-  <!-- Startscreen (nach Login) -->
-  <div id="startscreen" class="hidden">
-    <h2>Swipe deine Interessen</h2>
-    <div id="interessenIcons">❓</div>
-    <div id="interessen">Wird geladen...</div>
-    <button id="acceptBtn">👍</button>
-    <button id="rejectBtn">👎</button>
-
-    <div id="berufsergebnisse"></div>
-
-    <button id="logoutBtn">Logout</button>
-    <button id="gotoAdminBtn">Admin Login</button>
-  </div>
-
-  <!-- Admin Login -->
-  <section id="adminLoginSection" class="hidden">
-    <h2>Admin Login</h2>
-    <input type="text" id="adminUser" placeholder="Benutzername" /><br/>
-    <input type="password" id="adminPass" placeholder="Passwort" /><br/>
-    <button id="adminLoginBtn">Login</button>
-  </section>
-
-  <!-- Admin Panel -->
-  <section id="adminPanel" class="hidden">
-    <h2>Admin Panel</h2>
-    <!-- Hier kannst du deine Admin-Funktionen einbauen -->
-    <button id="adminLogoutBtn">Admin Logout</button>
-  </section>
-
-  <!-- Snackbar -->
-  <div id="snackbar"></div>
-
-  <!-- Script -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
@@ -116,6 +58,16 @@
       sb.className = `${type} show`;
       setTimeout(() => (sb.className = ''), 3000);
     }
+
+    let swipeInteressen = [];
+    let swipeIdx = 0;
+    let currentUserId = null;
+
+    const curIcon = document.getElementById('interessenIcons');
+    const curLabel = document.getElementById('interessen');
+    const acceptBtn = document.getElementById('acceptBtn');
+    const rejectBtn = document.getElementById('rejectBtn');
+    const berufsergebnisse = document.getElementById('berufsergebnisse');
 
     document.getElementById('registerBtn').onclick = async () => {
       const email = document.getElementById('registerEmail').value;
@@ -134,32 +86,19 @@
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) return showMessage('Login fehlgeschlagen: ' + error.message, 'error');
 
-      showMessage('Login erfolgreich!');
-      setTimeout(async () => {
-        document.getElementById('startscreen').classList.remove('hidden');
-        document.querySelector('.container').classList.add('hidden');
-        loadFilterOptions();
-        await initSwipeInteressen();
-      }, 800);
+      currentUserId = data.user.id;
+      document.getElementById('authSection').classList.add('hidden');
+      document.getElementById('startscreen').classList.remove('hidden');
+      await initSwipeInteressen();
     };
 
     document.getElementById('logoutBtn').onclick = async () => {
       await supabase.auth.signOut();
       location.reload();
     };
-
-    let swipeInteressen = [];
-    let swipeIdx = 0;
-    let currentUserId = null;
-
-    const curIcon = document.getElementById('interessenIcons');
-    const curLabel = document.getElementById('interessen');
-    const acceptBtn = document.getElementById('acceptBtn');
-    const rejectBtn = document.getElementById('rejectBtn');
-    const berufsergebnisse = document.getElementById('berufsergebnisse');
 
     async function initSwipeInteressen() {
       const { data: { session } } = await supabase.auth.getSession();
@@ -209,7 +148,7 @@
 
     async function showTopBeruf() {
       const { data: matches, error } = await supabase
-        .rpc('berufe_mit_interessen_match', { user_id: currentUserId });
+        .rpc('berufe_mit_interessen_match', { uid: currentUserId });
 
       if (error || !matches || matches.length === 0) {
         berufsergebnisse.innerHTML = `<p>Keine passenden Berufe gefunden ❌</p>`;
@@ -223,50 +162,15 @@
       `;
     }
 
-    // Admin-Login
-    const adminCredentials = { username: 'admin', password: 'geheim123' };
-    document.getElementById('gotoAdminBtn').onclick = () => {
-      document.getElementById('startscreen').classList.add('hidden');
-      document.getElementById('adminLoginSection').classList.remove('hidden');
-    };
-    document.getElementById('adminLoginBtn').onclick = () => {
-      const u = document.getElementById('adminUser').value;
-      const p = document.getElementById('adminPass').value;
-      if (u === adminCredentials.username && p === adminCredentials.password) {
-        document.getElementById('adminLoginSection').classList.add('hidden');
-        document.getElementById('adminPanel').classList.remove('hidden');
-        showMessage('Admin eingeloggt');
-        loadAdminIconGrids();
-      } else {
-        showMessage('Falsche Admin-Daten', 'error');
-      }
-    };
-    document.getElementById('adminLogoutBtn').onclick = () => {
-      document.getElementById('adminPanel').classList.add('hidden');
-      document.getElementById('adminLoginSection').classList.add('hidden');
-      document.querySelector('.container').classList.remove('hidden');
-      showMessage('Admin abgemeldet');
-    };
-
-    // Auto-Login
     (async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
+        currentUserId = session.user.id;
+        document.getElementById('authSection').classList.add('hidden');
         document.getElementById('startscreen').classList.remove('hidden');
-        document.querySelector('.container').classList.add('hidden');
-        loadFilterOptions();
         await initSwipeInteressen();
       }
     })();
-
-    // Platzhalter: loadFilterOptions und loadAdminIconGrids
-    function loadFilterOptions() {
-      // Deine Filter-Logik hier (falls benötigt)
-    }
-    function loadAdminIconGrids() {
-      // Deine Admin-Logik hier (falls benötigt)
-    }
   </script>
-
 </body>
 </html>
