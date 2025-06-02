@@ -83,7 +83,7 @@
       curIcon.textContent = '🎉';
       curLabel.textContent = 'Alle Interessen bewertet!';
       acceptBtn.style.display = rejectBtn.style.display = 'none';
-      showTopBeruf();  // ← Neu: nach Swipen Top-Beruf anzeigen
+      showTopBeruf();
       return;
     }
 
@@ -97,7 +97,7 @@
   rejectBtn.addEventListener('click', () => handleChoice('abgelehnt'));
 
   async function handleChoice(status) {
-    const interesseId = Number(curIcon.dataset.id);
+    const interesseId = curIcon.dataset.id;
     await supabase.from('user_interessen').upsert(
       { user_id: currentUserId, interessen_id: interesseId, status },
       { onConflict: ['user_id', 'interessen_id'] }
@@ -106,10 +106,9 @@
     showNextInterest();
   }
 
-  // Neu: Top-Beruf mit den meisten Übereinstimmungen anzeigen
   async function showTopBeruf() {
     const { data: matches, error } = await supabase
-      .rpc('berufe_mit_interessen_match', { user_id: currentUserId });
+      .rpc('berufe_mit_interessen_match', { uid: currentUserId });
 
     if (error || !matches || matches.length === 0) {
       berufsergebnisse.innerHTML = `<p>Keine passenden Berufe gefunden ❌</p>`;
@@ -123,7 +122,6 @@
     `;
   }
 
-  // Admin-Login
   const adminCredentials = { username: 'admin', password: 'geheim123' };
   document.getElementById('gotoAdminBtn').onclick = () => {
     document.getElementById('startscreen').classList.add('hidden');
@@ -148,7 +146,6 @@
     showMessage('Admin abgemeldet');
   };
 
-  // Auto-Login
   (async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session) {
