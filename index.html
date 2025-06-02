@@ -3,245 +3,84 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MakeMyFuture - Interessen Swipe</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 1rem;
-      max-width: 500px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    #snackbar {
-      visibility: hidden;
-      min-width: 250px;
-      margin-left: -125px;
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      border-radius: 2px;
-      padding: 14px;
-      position: fixed;
-      z-index: 1;
-      left: 50%;
-      bottom: 30px;
-      font-size: 17px;
-    }
-    #snackbar.show {
-      visibility: visible;
-      animation: fadein 0.5s, fadeout 0.5s 2.5s;
-    }
-    @keyframes fadein {
-      from { bottom: 0; opacity: 0; }
-      to { bottom: 30px; opacity: 1; }
-    }
-    @keyframes fadeout {
-      from { bottom: 30px; opacity: 1; }
-      to { bottom: 0; opacity: 0; }
-    }
-    button {
-      font-size: 18px;
-      margin: 5px;
-      padding: 8px 12px;
-      cursor: pointer;
-    }
-    input {
-      width: 100%;
-      padding: 8px;
-      margin: 5px 0 10px 0;
-      box-sizing: border-box;
-    }
-    .hidden {
-      display: none;
-    }
-    #interessenIcons {
-      font-size: 80px;
-      text-align: center;
-      margin: 20px 0;
-    }
-    #interessen {
-      text-align: center;
-      font-weight: bold;
-      font-size: 24px;
-      margin-bottom: 15px;
-    }
-    #berufsergebnisse {
-      margin-top: 30px;
-      font-size: 20px;
-      font-weight: bold;
-      text-align: center;
-    }
-  </style>
+  <title>MakeMyFuture</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- === Benutzerbereich === -->
+  <div class="container">
+    <img src="logo.png" alt="Logo" class="logo" />
+    <h2>Registrierung & Anmeldung</h2>
 
-  <h1>MakeMyFuture</h1>
+    <div id="registerSection">
+      <input type="text" id="name" placeholder="Name" required />
+      <input type="email" id="registerEmail" placeholder="E-Mail" required />
+      <input type="password" id="registerPassword" placeholder="Passwort" required />
+      <button id="registerBtn">Jetzt registrieren</button>
+    </div>
 
-  <!-- LOGIN & REGISTRIERUNG -->
-  <div id="authSection">
-    <h2>Login</h2>
-    <input type="email" id="email" placeholder="E-Mail" />
-    <input type="password" id="password" placeholder="Passwort" />
-    <button id="loginBtn">Login</button>
+    <hr />
 
-    <h2>Registrieren</h2>
-    <input type="text" id="name" placeholder="Name" />
-    <input type="email" id="registerEmail" placeholder="E-Mail" />
-    <input type="password" id="registerPassword" placeholder="Passwort" />
-    <button id="registerBtn">Registrieren</button>
+    <div id="loginSection">
+      <input type="email" id="email" placeholder="E-Mail" required />
+      <input type="password" id="password" placeholder="Passwort" required />
+      <button id="loginBtn">Login</button>
+    </div>
   </div>
 
-  <!-- INTERESSEN SWIPE -->
-  <div id="swipeSection" class="hidden">
-    <div id="interessenContainer">
-      <div id="interessenIcons">❓</div>
-      <div id="interessen">Lade Interessen...</div>
-      <div style="text-align:center;">
-        <button id="acceptBtn">👍</button>
-        <button id="rejectBtn">👎</button>
+  <div id="snackbar"></div>
+
+  <!-- === Benutzer-Startseite mit Swipe-Interessen === -->
+  <div id="startscreen" class="hidden">
+    <img src="logo.png" alt="MakeMyFuture Logo" class="logo" />
+    <h1>MakeMyFuture</h1>
+    <p class="slogan">Oops, I got a Job!</p>
+    <button id="logoutBtn">Abmelden</button>
+    <button id="gotoAdminBtn">Zum Adminbereich</button>
+
+    <h2>Wähle deine Interessen per Swipe</h2>
+    <div id="swipeInterestContainer" style="margin: 20px auto; max-width: 300px; position: relative; min-height: 150px; border: 1px solid #ccc; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <!-- Aktuelles Icon + Text -->
+      <div id="currentInterest" class="icon swipe-icon" style="font-size: 5rem; user-select: none;">❓</div>
+      <div id="currentInterestLabel" style="font-size: 1.2rem; margin-top: 10px; font-weight: bold;">Lade...</div>
+
+      <div style="margin-top: 12px; display: flex; justify-content: center; gap: 20px;">
+        <button id="rejectBtn" style="background: #dc3545; color: white; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer;">✗ Ablehnen</button>
+        <button id="acceptBtn" style="background: #28a745; color: white; padding: 10px 20px; border-radius: 6px; border: none; cursor: pointer;">✓ Zustimmen</button>
       </div>
     </div>
 
-    <div id="berufsergebnisse"></div>
-
-    <div style="text-align:center; margin-top:20px;">
-      <button id="logoutBtn">Logout</button>
-    </div>
+    <button id="filterBtn" style="margin-top: 30px;">Passende Ausbildungsberufe anzeigen</button>
+    <div id="resultList" style="margin-top: 20px;"></div>
   </div>
 
-  <!-- Snackbar für Nachrichten -->
-  <div id="snackbar"></div>
+  <!-- === Admin Login === -->
+  <div id="adminLoginSection" class="container hidden">
+    <h2>Admin Login</h2>
+    <input type="text" id="adminUser" placeholder="Benutzername" />
+    <input type="password" id="adminPass" placeholder="Passwort" />
+    <button id="adminLoginBtn">Login als Admin</button>
+  </div>
 
-  <!-- SCRIPT: Supabase + Swipe Logik -->
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  <!-- === Admin Panel mit Icons statt Checkboxen === -->
+  <div id="adminPanel" class="container hidden">
+    <h2>Ausbildungsberuf hinzufügen</h2>
+    <input type="text" id="berufsbezeichnung" placeholder="Berufsbezeichnung" />
+    <textarea id="beschreibung" placeholder="Beschreibung"></textarea>
+    <textarea id="anforderungen" placeholder="Anforderungen"></textarea>
+    <input type="number" id="verdienst" placeholder="Verdienst (nach Ausbildung)" />
+    <input type="text" id="einsatzorte" placeholder="Einsatzorte" />
 
-    const supabase = createClient(
-      'https://vedcigedhjkarkcbqvtf.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZGNpZ2VkaGprYXJrY2JxdnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMjI3NjUsImV4cCI6MjA2Mjc5ODc2NX0.Q7By1dg4FFZrA6UPWYVGHJinydzltjlpW3riruZTPXA'
-    );
+    <h3>Schulabschluss (eine Auswahl)</h3>
+    <div id="abschlussIconsAdmin" class="icon-grid"></div>
 
-    function showMessage(text, type = 'success') {
-      const sb = document.getElementById('snackbar');
-      sb.textContent = text;
-      sb.className = `${type} show`;
-      setTimeout(() => (sb.className = ''), 3000);
-    }
+    <h3>Interessensgebiete (mehrere möglich)</h3>
+    <div id="interessenIconsAdmin" class="icon-grid"></div>
 
-    // UI Elemente
-    const authSection = document.getElementById('authSection');
-    const swipeSection = document.getElementById('swipeSection');
-    const curIcon = document.getElementById('interessenIcons');
-    const curLabel = document.getElementById('interessen');
-    const acceptBtn = document.getElementById('acceptBtn');
-    const rejectBtn = document.getElementById('rejectBtn');
-    const berufsergebnisse = document.getElementById('berufsergebnisse');
+    <button id="addBerufBtn">Speichern</button>
+    <button id="adminLogoutBtn">Abmelden</button>
+  </div>
 
-    // Login & Registrierung
-    document.getElementById('registerBtn').onclick = async () => {
-      const email = document.getElementById('registerEmail').value;
-      const password = document.getElementById('registerPassword').value;
-      const name = document.getElementById('name').value;
-
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { name }, emailRedirectTo: window.location.href }
-      });
-      showMessage(error ? 'Registrierung fehlgeschlagen: ' + error.message : 'Registrierung erfolgreich! Bitte E-Mail bestätigen.', error ? 'error' : 'success');
-    };
-
-    document.getElementById('loginBtn').onclick = async () => {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) {
-        showMessage('Login fehlgeschlagen: ' + error.message, 'error');
-        return;
-      }
-
-      showMessage('Login erfolgreich!');
-      await afterLogin();
-    };
-
-    document.getElementById('logoutBtn').onclick = async () => {
-      await supabase.auth.signOut();
-      location.reload();
-    };
-
-    // Swipe-Variablen
-    let swipeInteressen = [];
-    let swipeIdx = 0;
-    let currentUserId = null;
-
-    async function afterLogin() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        showMessage('Keine aktive Session', 'error');
-        return;
-      }
-      currentUserId = session.user.id;
-
-      authSection.classList.add('hidden');
-      swipeSection.classList.remove('hidden');
-
-      await initSwipeInteressen();
-    }
-
-    async function initSwipeInteressen() {
-      const { data, error } = await supabase.from('interessen').select('*');
-      if (error || !data?.length) {
-        curLabel.textContent = 'Fehler beim Laden ❌';
-        curIcon.textContent = '⚠️';
-        acceptBtn.disabled = rejectBtn.disabled = true;
-        return;
-      }
-
-      swipeInteressen = data;
-      swipeIdx = 0;
-      acceptBtn.style.display = rejectBtn.style.display = 'inline-block';
-      acceptBtn.disabled = rejectBtn.disabled = false;
-      showNextInterest();
-    }
-
-    function showNextInterest() {
-      if (swipeIdx >= swipeInteressen.length) {
-        curIcon.textContent = '🎉';
-        curLabel.textContent = 'Alle Interessen bewertet!';
-        acceptBtn.style.display = rejectBtn.style.display = 'none';
-
-        showTopBeruf();
-        return;
-      }
-
-      const cur = swipeInteressen[swipeIdx];
-      curIcon.innerHTML = cur.icon || '❓';
-      curLabel.textContent = cur.name;
-      curIcon.dataset.id = cur.id;
-    }
-
-    acceptBtn.addEventListener('click', () => handleChoice('zugestimmt'));
-    rejectBtn.addEventListener('click', () => handleChoice('abgelehnt'));
-
-    async function handleChoice(status) {
-      const interesseId = Number(curIcon.dataset.id);
-      const { error } = await supabase.from('user_interessen').upsert(
-        { user_id: currentUserId, interessen_id: interesseId, status },
-        { onConflict: ['user_id', 'interessen_id'] }
-      );
-      if (error) {
-        showMessage('Fehler beim Speichern: ' + error.message, 'error');
-        return;
-      }
-      swipeIdx++;
-      showNextInterest();
-    }
-
-    async function showTopBeruf() {
-      const { data: matches, error } = await supabase
-        .rpc('berufe_mit_interessen_match', { uid: currentUserId });
-
-      if (error || !matches || matches.length === 0) {
-        berufsergebnisse.innerHTML = `<p>Keine passenden Berufe gefunden ❌</p>`;
-        return
+  <script type="module" src="script.js"></script>
+</body>
+</html>
