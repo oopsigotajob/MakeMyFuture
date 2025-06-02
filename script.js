@@ -63,8 +63,8 @@ let swipeInteressen = [];      // Array mit allen Interessen
 let swipeIdx        = 0;       // aktueller Index
 let currentUserId   = null;    // User-ID für Speicherung
 
-const curIcon   = document.getElementById('currentInterest');
-const curLabel  = document.getElementById('currentInterestLabel');
+const curIcon   = document.getElementById('interessenIcons');
+const curLabel  = document.getElementById('interessen');
 const acceptBtn = document.getElementById('acceptBtn');
 const rejectBtn = document.getElementById('rejectBtn');
 
@@ -117,8 +117,8 @@ async function handleChoice(status) {
   const interesseId = Number(curIcon.dataset.id);
   // Speichern in Tabelle user_interessen (onConflict → update status)
   await supabase.from('user_interessen').upsert(
-    { user_id: currentUserId, interesse_id: interesseId, status },
-    { onConflict: ['user_id', 'interesse_id'] }
+    { user_id: currentUserId, interessen_id: interessenId, status },
+    { onConflict: ['user_id', 'interessen_id'] }
   );
   swipeIdx += 1;
   showNextInterest();
