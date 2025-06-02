@@ -2,40 +2,117 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Berufswahl App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MakeMyFuture - Interessen Swipe</title>
   <style>
-    .hidden { display: none; }
-    #snackbar { position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); padding: 10px 20px; border-radius: 5px; background: #333; color: white; opacity: 0.9; z-index: 1000; }
-    #snackbar.success { background: green; }
-    #snackbar.error { background: red; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 1rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #snackbar {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 2px;
+      padding: 14px;
+      position: fixed;
+      z-index: 1;
+      left: 50%;
+      bottom: 30px;
+      font-size: 17px;
+    }
+    #snackbar.show {
+      visibility: visible;
+      animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+    @keyframes fadein {
+      from { bottom: 0; opacity: 0; }
+      to { bottom: 30px; opacity: 1; }
+    }
+    @keyframes fadeout {
+      from { bottom: 30px; opacity: 1; }
+      to { bottom: 0; opacity: 0; }
+    }
+    button {
+      font-size: 18px;
+      margin: 5px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 10px 0;
+      box-sizing: border-box;
+    }
+    .hidden {
+      display: none;
+    }
+    #interessenIcons {
+      font-size: 80px;
+      text-align: center;
+      margin: 20px 0;
+    }
+    #interessen {
+      text-align: center;
+      font-weight: bold;
+      font-size: 24px;
+      margin-bottom: 15px;
+    }
+    #berufsergebnisse {
+      margin-top: 30px;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Berufswahl</h1>
+
+  <h1>MakeMyFuture</h1>
+
+  <!-- LOGIN & REGISTRIERUNG -->
+  <div id="authSection">
+    <h2>Login</h2>
     <input type="email" id="email" placeholder="E-Mail" />
     <input type="password" id="password" placeholder="Passwort" />
     <button id="loginBtn">Login</button>
-    <hr />
+
+    <h2>Registrieren</h2>
     <input type="text" id="name" placeholder="Name" />
     <input type="email" id="registerEmail" placeholder="E-Mail" />
     <input type="password" id="registerPassword" placeholder="Passwort" />
     <button id="registerBtn">Registrieren</button>
   </div>
 
-  <div id="startscreen" class="hidden">
-    <h2>Swipe deine Interessen</h2>
-    <div id="interessenIcons" style="font-size: 64px;">❓</div>
-    <div id="interessen">Lade...</div>
-    <button id="acceptBtn">👍</button>
-    <button id="rejectBtn">👎</button>
+  <!-- INTERESSEN SWIPE -->
+  <div id="swipeSection" class="hidden">
+    <div id="interessenContainer">
+      <div id="interessenIcons">❓</div>
+      <div id="interessen">Lade Interessen...</div>
+      <div style="text-align:center;">
+        <button id="acceptBtn">👍</button>
+        <button id="rejectBtn">👎</button>
+      </div>
+    </div>
+
     <div id="berufsergebnisse"></div>
-    <button id="logoutBtn">Logout</button>
+
+    <div style="text-align:center; margin-top:20px;">
+      <button id="logoutBtn">Logout</button>
+    </div>
   </div>
 
+  <!-- Snackbar für Nachrichten -->
   <div id="snackbar"></div>
 
+  <!-- SCRIPT: Supabase + Swipe Logik -->
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
@@ -51,6 +128,16 @@
       setTimeout(() => (sb.className = ''), 3000);
     }
 
+    // UI Elemente
+    const authSection = document.getElementById('authSection');
+    const swipeSection = document.getElementById('swipeSection');
+    const curIcon = document.getElementById('interessenIcons');
+    const curLabel = document.getElementById('interessen');
+    const acceptBtn = document.getElementById('acceptBtn');
+    const rejectBtn = document.getElementById('rejectBtn');
+    const berufsergebnisse = document.getElementById('berufsergebnisse');
+
+    // Login & Registrierung
     document.getElementById('registerBtn').onclick = async () => {
       const email = document.getElementById('registerEmail').value;
       const password = document.getElementById('registerPassword').value;
@@ -69,14 +156,13 @@
       const password = document.getElementById('password').value;
 
       const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) return showMessage('Login fehlgeschlagen: ' + error.message, 'error');
+      if (error) {
+        showMessage('Login fehlgeschlagen: ' + error.message, 'error');
+        return;
+      }
 
       showMessage('Login erfolgreich!');
-      setTimeout(async () => {
-        document.getElementById('startscreen').classList.remove('hidden');
-        document.querySelector('.container').classList.add('hidden');
-        await initSwipeInteressen();
-      }, 800);
+      await afterLogin();
     };
 
     document.getElementById('logoutBtn').onclick = async () => {
@@ -84,21 +170,26 @@
       location.reload();
     };
 
+    // Swipe-Variablen
     let swipeInteressen = [];
     let swipeIdx = 0;
     let currentUserId = null;
 
-    const curIcon = document.getElementById('interessenIcons');
-    const curLabel = document.getElementById('interessen');
-    const acceptBtn = document.getElementById('acceptBtn');
-    const rejectBtn = document.getElementById('rejectBtn');
-    const berufsergebnisse = document.getElementById('berufsergebnisse');
-
-    async function initSwipeInteressen() {
+    async function afterLogin() {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
+      if (!session) {
+        showMessage('Keine aktive Session', 'error');
+        return;
+      }
       currentUserId = session.user.id;
 
+      authSection.classList.add('hidden');
+      swipeSection.classList.remove('hidden');
+
+      await initSwipeInteressen();
+    }
+
+    async function initSwipeInteressen() {
       const { data, error } = await supabase.from('interessen').select('*');
       if (error || !data?.length) {
         curLabel.textContent = 'Fehler beim Laden ❌';
@@ -109,6 +200,8 @@
 
       swipeInteressen = data;
       swipeIdx = 0;
+      acceptBtn.style.display = rejectBtn.style.display = 'inline-block';
+      acceptBtn.disabled = rejectBtn.disabled = false;
       showNextInterest();
     }
 
@@ -117,6 +210,7 @@
         curIcon.textContent = '🎉';
         curLabel.textContent = 'Alle Interessen bewertet!';
         acceptBtn.style.display = rejectBtn.style.display = 'none';
+
         showTopBeruf();
         return;
       }
@@ -132,10 +226,14 @@
 
     async function handleChoice(status) {
       const interesseId = Number(curIcon.dataset.id);
-      await supabase.from('user_interessen').upsert(
+      const { error } = await supabase.from('user_interessen').upsert(
         { user_id: currentUserId, interessen_id: interesseId, status },
         { onConflict: ['user_id', 'interessen_id'] }
       );
+      if (error) {
+        showMessage('Fehler beim Speichern: ' + error.message, 'error');
+        return;
+      }
       swipeIdx++;
       showNextInterest();
     }
@@ -146,24 +244,4 @@
 
       if (error || !matches || matches.length === 0) {
         berufsergebnisse.innerHTML = `<p>Keine passenden Berufe gefunden ❌</p>`;
-        return;
-      }
-
-      const topBeruf = matches[0];
-      berufsergebnisse.innerHTML = `
-        <h3>Top-Beruf für dich:</h3>
-        <p><strong>${topBeruf.name}</strong> (${topBeruf.match_count} Übereinstimmungen)</p>
-      `;
-    }
-
-    (async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        document.getElementById('startscreen').classList.remove('hidden');
-        document.querySelector('.container').classList.add('hidden');
-        await initSwipeInteressen();
-      }
-    })();
-  </script>
-</body>
-</html>
+        return
