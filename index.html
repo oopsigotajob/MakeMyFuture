@@ -3,46 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Berufswahl-Spiel</title>
+  <title>Berufswahl App</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f0f0f0; margin: 0; padding: 0; text-align: center; }
     .hidden { display: none; }
-    .container { max-width: 600px; margin: 40px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    #snackbar { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 1; left: 50%; bottom: 30px; transform: translateX(-50%); }
-    #snackbar.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-    @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
-    @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
-    button { margin: 5px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    #snackbar { position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); padding: 10px 20px; border-radius: 5px; background: #333; color: white; opacity: 0.9; z-index: 1000; }
+    #snackbar.success { background: green; }
+    #snackbar.error { background: red; }
   </style>
 </head>
 <body>
   <div class="container">
-    <div id="snackbar"></div>
-
-    <div id="authSection">
-      <h2>Registrieren</h2>
-      <input type="text" id="name" placeholder="Name" /><br />
-      <input type="email" id="registerEmail" placeholder="E-Mail" /><br />
-      <input type="password" id="registerPassword" placeholder="Passwort" /><br />
-      <button id="registerBtn">Registrieren</button>
-
-      <h2>Login</h2>
-      <input type="email" id="email" placeholder="E-Mail" /><br />
-      <input type="password" id="password" placeholder="Passwort" /><br />
-      <button id="loginBtn">Login</button>
-    </div>
-
-    <div id="startscreen" class="hidden">
-      <h2>Willkommen!</h2>
-      <p id="interessen">Interesse</p>
-      <div id="interessenIcons" style="font-size: 48px;"></div>
-      <button id="acceptBtn">Gefällt mir</button>
-      <button id="rejectBtn">Weiter</button><br /><br />
-      <button id="logoutBtn">Logout</button>
-
-      <div id="berufsergebnisse"></div>
-    </div>
+    <h1>Berufswahl</h1>
+    <input type="email" id="email" placeholder="E-Mail" />
+    <input type="password" id="password" placeholder="Passwort" />
+    <button id="loginBtn">Login</button>
+    <hr />
+    <input type="text" id="name" placeholder="Name" />
+    <input type="email" id="registerEmail" placeholder="E-Mail" />
+    <input type="password" id="registerPassword" placeholder="Passwort" />
+    <button id="registerBtn">Registrieren</button>
   </div>
+
+  <div id="startscreen" class="hidden">
+    <h2>Swipe deine Interessen</h2>
+    <div id="interessenIcons" style="font-size: 64px;">❓</div>
+    <div id="interessen">Lade...</div>
+    <button id="acceptBtn">👍</button>
+    <button id="rejectBtn">👎</button>
+    <div id="berufsergebnisse"></div>
+    <button id="logoutBtn">Logout</button>
+  </div>
+
+  <div id="snackbar"></div>
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -58,16 +50,6 @@
       sb.className = `${type} show`;
       setTimeout(() => (sb.className = ''), 3000);
     }
-
-    let swipeInteressen = [];
-    let swipeIdx = 0;
-    let currentUserId = null;
-
-    const curIcon = document.getElementById('interessenIcons');
-    const curLabel = document.getElementById('interessen');
-    const acceptBtn = document.getElementById('acceptBtn');
-    const rejectBtn = document.getElementById('rejectBtn');
-    const berufsergebnisse = document.getElementById('berufsergebnisse');
 
     document.getElementById('registerBtn').onclick = async () => {
       const email = document.getElementById('registerEmail').value;
@@ -86,19 +68,31 @@
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) return showMessage('Login fehlgeschlagen: ' + error.message, 'error');
 
-      currentUserId = data.user.id;
-      document.getElementById('authSection').classList.add('hidden');
-      document.getElementById('startscreen').classList.remove('hidden');
-      await initSwipeInteressen();
+      showMessage('Login erfolgreich!');
+      setTimeout(async () => {
+        document.getElementById('startscreen').classList.remove('hidden');
+        document.querySelector('.container').classList.add('hidden');
+        await initSwipeInteressen();
+      }, 800);
     };
 
     document.getElementById('logoutBtn').onclick = async () => {
       await supabase.auth.signOut();
       location.reload();
     };
+
+    let swipeInteressen = [];
+    let swipeIdx = 0;
+    let currentUserId = null;
+
+    const curIcon = document.getElementById('interessenIcons');
+    const curLabel = document.getElementById('interessen');
+    const acceptBtn = document.getElementById('acceptBtn');
+    const rejectBtn = document.getElementById('rejectBtn');
+    const berufsergebnisse = document.getElementById('berufsergebnisse');
 
     async function initSwipeInteressen() {
       const { data: { session } } = await supabase.auth.getSession();
@@ -165,9 +159,8 @@
     (async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        currentUserId = session.user.id;
-        document.getElementById('authSection').classList.add('hidden');
         document.getElementById('startscreen').classList.remove('hidden');
+        document.querySelector('.container').classList.add('hidden');
         await initSwipeInteressen();
       }
     })();
