@@ -1,43 +1,46 @@
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Berufsorientierung</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div id="loginScreen" class="screen">
-      <h2>Login</h2>
-      <input type="email" id="email" placeholder="E-Mail" />
-      <input type="password" id="password" placeholder="Passwort" />
-      <button onclick="login()">Login</button>
-      <p id="loginError"></p>
-    </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Berufsorientierung</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Berufsorientierung</h1>
 
-    <div id="startscreen" class="screen" style="display:none;">
-      <h2>Willkommen!</h2>
-      <button onclick="logout()">Logout</button>
+  <div id="auth-section">
+    <h2>Registrieren</h2>
+    <form id="register-form">
+      <input type="email" id="register-email" placeholder="Email" required>
+      <input type="password" id="register-password" placeholder="Passwort" required>
+      <button type="submit">Registrieren</button>
+    </form>
 
-      <h3>Dein Schulabschluss (eine Auswahl)</h3>
-      <div id="abschlussIcons" class="icon-grid"></div>
+    <h2>Login</h2>
+    <form id="login-form">
+      <input type="email" id="login-email" placeholder="Email" required>
+      <input type="password" id="login-password" placeholder="Passwort" required>
+      <button type="submit">Login</button>
+    </form>
+  </div>
 
-      <h3>Deine Interessen (mehrere möglich)</h3>
-      <div id="interessenIcons" class="icon-grid"></div>
+  <div id="dashboard">
+    <h2>Interessen</h2>
+    <div id="swipe-container"></div>
+    <button id="yes-btn">Ja</button>
+    <button id="no-btn">Nein</button>
+    <button id="match-button" style="display:none;">Passenden Beruf finden</button>
 
-      <h3>Lieblingsfächer (mehrere möglich)</h3>
-      <div id="faecherIcons" class="icon-grid"></div>
+    <div id="ergebnis"></div>
+  </div>
 
-      <button onclick="zeigeEmpfehlungen()">Berufe anzeigen</button>
-      <div id="ergebnis"></div>
-    </div>
+  <div id="admin">
+    <h2>Adminbereich</h2>
+    <ul id="user-list"></ul>
+  </div>
 
-    <div id="adminScreen" class="screen" style="display:none;">
-      <h2>Adminbereich</h2>
-      <button onclick="logout()">Logout</button>
-      <div id="adminFormContainer"></div>
-    </div>
-
-    <script type="module" src="script.js"></script>
-  </body>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="script.js"></script>
+</body>
 </html>
