@@ -325,5 +325,7 @@ async function getBestMatchingJob() {
 
 
 document.getElementById('showBestJobBtn').addEventListener('click', async () => {
+    console.log("Button wurde geklickt!");
     await getBestMatchingJob();
 });
+
