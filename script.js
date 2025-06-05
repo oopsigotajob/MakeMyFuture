@@ -267,6 +267,50 @@ document.getElementById('filterBtn').addEventListener('click', async () => {
     : '<p>Keine passenden Berufe gefunden.</p>';
 });
 
+async function getBestMatchingJob() {
+    const { data: userInteressen, error: userError } = await supabase
+        .from('user_interessen')
+        .select('interesse_id')
+        .eq('user_id', currentUserId)
+        .eq('status', 'zugestimmt');
+
+    if (userError || !userInteressen.length) {
+        console.error('Fehler beim Abrufen der Nutzerinteressen:', userError);
+        return;
+    }
+
+    const interessenIds = userInteressen.map(i => i.interesse_id);
+
+    const { data: jobs, error: jobsError } = await supabase
+        .from('ausbildungsberufe')
+        .select('id, berufsbezeichnung, beschreibung, interessen_ids');
+
+    if (jobsError || !jobs.length) {
+        console.error('Fehler beim Abrufen der Berufe:', jobsError);
+        return;
+    }
+
+    let bestMatch = null;
+    let maxMatches = 0;
+
+    jobs.forEach(job => {
+        const matches = job.interessen_ids.filter(id => interessenIds.includes(id)).length;
+        if (matches > maxMatches) {
+            maxMatches = matches;
+            bestMatch = job;
+        }
+    });
+
+    if (bestMatch) {
+        document.getElementById('bestJobResult').innerHTML = `
+            <strong>${bestMatch.berufsbezeichnung}</strong><br>
+            ${bestMatch.beschreibung}
+        `;
+    } else {
+        document.getElementById('bestJobResult').innerHTML = '<p>Kein passender Beruf gefunden.</p>';
+    }
+}
+
 /* ╔══════════════╗ Auto-Login ╚══════════════╝ */
 (async () => {
   const { data:{ session } } = await supabase.auth.getSession();
