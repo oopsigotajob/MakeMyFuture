@@ -343,4 +343,9 @@ document.getElementById('showBestJobBtn').addEventListener('click', async () => 
     console.log("Button wurde geklickt!");
     await getBestMatchingJob();
 });
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById('acceptBtn').addEventListener('click', () => handleChoice('zugestimmt'));
+    document.getElementById('rejectBtn').addEventListener('click', () => handleChoice('abgelehnt'));
+});
+
 
