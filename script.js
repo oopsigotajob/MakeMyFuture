@@ -321,3 +321,9 @@ async function getBestMatchingJob() {
     await initSwipeInteressen();
   }
 })();
+
+
+
+document.getElementById('showBestJobBtn').addEventListener('click', async () => {
+    await getBestMatchingJob();
+});
