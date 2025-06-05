@@ -1,170 +1,86 @@
-/* === Basislayout === */
 body {
   font-family: Arial, sans-serif;
-  background: #f4f4f4;
+  background-color: #f4f4f4;
   margin: 0;
-  text-align: center;
+  padding: 0;
 }
 
-.container {
-  max-width: 420px;
-  margin: 60px auto;
-  padding: 25px 20px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+.screen {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.hidden {
-  display: none;
-}
-
-.logo {
-  width: 110px;
-  margin-bottom: 18px;
-}
-
-h1, h2, h3 {
-  margin-top: 20px;
-  color: #333;
-}
-
-hr {
-  margin: 20px 0;
-}
-
-/* === Formulare === */
-input,
-textarea,
-select {
+input, select {
+  display: block;
   width: 100%;
-  padding: 10px;
-  margin: 8px 0 16px 0;
+  margin-bottom: 10px;
+  padding: 8px;
+  border-radius: 4px;
   border: 1px solid #ccc;
-  border-radius: 6px;
-  box-sizing: border-box;
-  font-size: 16px;
-}
-
-textarea {
-  resize: vertical;
 }
 
 button {
-  width: 100%;
-  padding: 10px 15px;
-  background: #28a745;
-  color: #fff;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
-  transition: background 0.2s ease;
-  margin-top: 10px;
 }
 
 button:hover {
-  background: #218838;
+  background-color: #0056b3;
 }
 
-/* === Snackbar (Benachrichtigungen) === */
-#snackbar {
-  visibility: hidden;
-  min-width: 250px;
-  max-width: 300px;
-  position: fixed;
-  left: 50%;
-  bottom: 32px;
-  transform: translateX(-50%);
-  background: #333;
-  color: #fff;
-  padding: 12px;
-  border-radius: 6px;
-  text-align: center;
-  z-index: 999;
-  opacity: 0;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
+.error {
+  color: red;
 }
 
-#snackbar.show {
-  visibility: visible;
-  opacity: 1;
-}
-#snackbar.success {
-  background: #28a745;
-}
-#snackbar.error {
-  background: #dc3545;
-}
-
-/* === Startscreen / Slogan === */
-.slogan {
-  font-style: italic;
-  color: #777;
-  font-size: 1.2em;
-  margin-bottom: 20px;
-}
-
-/* === Icon-Grids (User & Admin) === */
 .icon-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
   gap: 12px;
-  justify-content: center;
-  margin: 15px 0;
+  margin: 16px 0;
+  justify-items: center;
 }
 
 .icon {
-  border: 2px solid #ccc;
+  font-size: 2rem;
+  background: #f0f0f0;
+  padding: 12px;
   border-radius: 10px;
-  padding: 10px 6px;
-  width: 100px;
-  min-height: 90px;
-  text-align: center;
   cursor: pointer;
   user-select: none;
-  font-size: 24px;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  word-wrap: break-word;
-  white-space: normal;
-  line-height: 1.2;
-  background-color: #fff;
-  transition: all 0.2s ease;
-}
-
-.icon span {
-  display: block;
-  font-size: 14px;
-  margin-top: 6px;
-  word-break: break-word;
-}
-
-.icon:hover {
-  border-color: #aaa;
 }
 
 .icon.selected {
+  background: #d1e7dd;
   border-color: #28a745;
-  background-color: #e6f9ea;
 }
 
-/* === Ergebnisliste === */
-.result {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 12px;
-  margin: 10px 0;
-  text-align: left;
-  background: #fff;
-}
-
-/* === Labels (optional) === */
-label {
+.icon span {
+  font-size: 0.9rem;
+  margin-top: 4px;
+  color: #333;
   font-weight: bold;
-  display: block;
-  margin-top: 12px;
+}
+
+.result {
+  background: #fff;
+  border-left: 5px solid #28a745;
+  padding: 12px 16px;
+  margin: 10px auto;
+  max-width: 460px;
   text-align: left;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
 }
