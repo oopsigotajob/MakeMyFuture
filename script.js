@@ -109,10 +109,12 @@ rejectBtn.addEventListener('click', () => handleChoice('abgelehnt'));
 
 async function handleChoice(status) {
   const interesseId = Number(curIcon.dataset.id);
-  await supabase.from('user_interessen').upsert(
-    { user_id: currentUserId, interesse_id: interesseId, status },
-    { onConflict: ['user_id', 'interesse_id'] }
-  );
+  const { error } = await supabase.from('user_interessen').upsert([
+    { user_id: currentUserId, interesse_id: interesseId, status }
+], { onConflict: ['user_id', 'interesse_id'] });
+
+if (error) console.error("Fehler beim Speichern der Interessen:", error);
+
   swipeIdx += 1;
   showNextInterest();
 }
@@ -307,7 +309,9 @@ async function getBestMatchingJob() {
     let maxMatches = 0;
 
     jobs.forEach(job => {
-        const matches = job.interessen_ids.filter(id => interessenIds.includes(id)).length;
+        const interessenIdsBeruf = JSON.parse(job.interessen_ids);
+const matches = interessenIdsBeruf.filter(id => interessenIds.includes(id)).length;
+
         if (matches > maxMatches) {
             maxMatches = matches;
             bestMatch = job;
