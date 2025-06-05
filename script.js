@@ -123,7 +123,9 @@ async function handleChoice(status) {
     }  
 
     console.log("Interesse erfolgreich gespeichert!");  
-    swipeIdx += 1;  
+   swipeIdx++;
+console.log("Neuer Swipe-Index:", swipeIdx);
+
     showNextInterest();  
 }
 
