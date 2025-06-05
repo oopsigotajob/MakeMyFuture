@@ -91,14 +91,12 @@ async function initSwipeInteressen() {
 
 /* ╔══════════════════╗ Nächstes Icon ╚══════════════════╗ */
 function showNextInterest() {
-  if (swipeIdx >= swipeInteressen.length) { 
-    console.log("Alle Interessen wurden durchgeswipt!");
-    curIcon.textContent = '🎉'; 
+  if (swipeIdx >= swipeInteressen.length) {
+    curIcon.textContent  = '🎉';
     curLabel.textContent = 'Alle Interessen bewertet!';
     acceptBtn.style.display = rejectBtn.style.display = 'none';
-    return; 
-}
-
+    return;
+  }
   const cur = swipeInteressen[swipeIdx];
   curIcon.innerHTML  = cur.icon || '❓';
   curLabel.textContent = cur.name;
@@ -109,28 +107,15 @@ function showNextInterest() {
 acceptBtn.addEventListener('click', () => handleChoice('zugestimmt'));
 rejectBtn.addEventListener('click', () => handleChoice('abgelehnt'));
 
-async function handleChoice(status) {  
-    const interesseId = Number(curIcon.dataset.id);  
-    console.log("handleChoice wurde aufgerufen! Status:", status);  
-
-    const { error } = await supabase.from('user_interessen').insert([{  
-        user_id: currentUserId,  
-        interesse_id: interesseId,  
-        status  
-    }]);  
-
-    if (error) {  
-        console.error("Fehler beim Speichern der Interessen:", error);  
-        return;  
-    }  
-
-    console.log("Interesse erfolgreich gespeichert!");  
-    swipeIdx++;  
-    showNextInterest();  
+async function handleChoice(status) {
+  const interesseId = Number(curIcon.dataset.id);
+  await supabase.from('user_interessen').upsert(
+    { user_id: currentUserId, interesse_id: interesseId, status },
+    { onConflict: ['user_id', 'interesse_id'] }
+  );
+  swipeIdx += 1;
+  showNextInterest();
 }
-
-
-
 
 /* ╔══════════════╗ Admin-Login ╚══════════════╝ */
 const adminCredentials = { username: 'admin', password: 'geheim123' };
@@ -282,8 +267,6 @@ document.getElementById('filterBtn').addEventListener('click', async () => {
     : '<p>Keine passenden Berufe gefunden.</p>';
 });
 
-
-
 /* ╔══════════════╗ Auto-Login ╚══════════════╝ */
 (async () => {
   const { data:{ session } } = await supabase.auth.getSession();
@@ -294,60 +277,3 @@ document.getElementById('filterBtn').addEventListener('click', async () => {
     await initSwipeInteressen();
   }
 })();
-
-async function getBestMatchingJob() {
-    const { data: userInteressen, error: userError } = await supabase
-        .from('user_interessen')
-        .select('interesse_id')
-        .eq('user_id', currentUserId)
-        .eq('status', 'zugestimmt');
-
-    if (userError || !userInteressen.length) {
-        console.error('Fehler beim Abrufen der Nutzerinteressen:', userError);
-        return;
-    }
-
-    const interessenIds = userInteressen.map(i => i.interesse_id);
-
-    const { data: jobs, error: jobsError } = await supabase
-        .from('ausbildungsberufe')
-        .select('id, berufsbezeichnung, beschreibung, interessen_ids');
-
-    if (jobsError || !jobs.length) {
-        console.error('Fehler beim Abrufen der Berufe:', jobsError);
-        return;
-    }
-
-    let bestMatch = null;
-    let maxMatches = 0;
-
-    jobs.forEach(job => {
-        const interessenIdsBeruf = JSON.parse(job.interessen_ids);
-const matches = interessenIdsBeruf.filter(id => interessenIds.includes(id)).length;
-
-        if (matches > maxMatches) {
-            maxMatches = matches;
-            bestMatch = job;
-        }
-    });
-
-    if (bestMatch) {
-        document.getElementById('bestJobResult').innerHTML = `
-            <strong>${bestMatch.berufsbezeichnung}</strong><br>
-            ${bestMatch.beschreibung}
-        `;
-    } else {
-        document.getElementById('bestJobResult').innerHTML = '<p>Kein passender Beruf gefunden.</p>';
-    }
-}
-
-document.getElementById('showBestJobBtn').addEventListener('click', async () => {
-    console.log("Button wurde geklickt!");
-    await getBestMatchingJob();
-});
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById('acceptBtn').addEventListener('click', () => handleChoice('zugestimmt'));
-    document.getElementById('rejectBtn').addEventListener('click', () => handleChoice('abgelehnt'));
-});
-
-
