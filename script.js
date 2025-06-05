@@ -91,12 +91,14 @@ async function initSwipeInteressen() {
 
 /* ╔══════════════════╗ Nächstes Icon ╚══════════════════╗ */
 function showNextInterest() {
-  if (swipeIdx >= swipeInteressen.length) {
-    curIcon.textContent  = '🎉';
+  if (swipeIdx >= swipeInteressen.length) { 
+    console.log("Alle Interessen wurden durchgeswipt!");
+    curIcon.textContent = '🎉'; 
     curLabel.textContent = 'Alle Interessen bewertet!';
     acceptBtn.style.display = rejectBtn.style.display = 'none';
-    return;
-  }
+    return; 
+}
+
   const cur = swipeInteressen[swipeIdx];
   curIcon.innerHTML  = cur.icon || '❓';
   curLabel.textContent = cur.name;
@@ -123,11 +125,11 @@ async function handleChoice(status) {
     }  
 
     console.log("Interesse erfolgreich gespeichert!");  
-   swipeIdx++;
-console.log("Neuer Swipe-Index:", swipeIdx);
-
+    swipeIdx++;  
     showNextInterest();  
 }
+
+
 
 
 /* ╔══════════════╗ Admin-Login ╚══════════════╝ */
