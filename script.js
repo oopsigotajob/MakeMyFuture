@@ -267,6 +267,19 @@ document.getElementById('filterBtn').addEventListener('click', async () => {
     : '<p>Keine passenden Berufe gefunden.</p>';
 });
 
+
+
+/* ╔══════════════╗ Auto-Login ╚══════════════╝ */
+(async () => {
+  const { data:{ session } } = await supabase.auth.getSession();
+  if (session) {
+    document.getElementById('startscreen').classList.remove('hidden');
+    document.querySelector('.container').classList.add('hidden');
+    loadFilterOptions();
+    await initSwipeInteressen();
+  }
+})();
+
 async function getBestMatchingJob() {
     const { data: userInteressen, error: userError } = await supabase
         .from('user_interessen')
@@ -310,19 +323,6 @@ async function getBestMatchingJob() {
         document.getElementById('bestJobResult').innerHTML = '<p>Kein passender Beruf gefunden.</p>';
     }
 }
-
-/* ╔══════════════╗ Auto-Login ╚══════════════╝ */
-(async () => {
-  const { data:{ session } } = await supabase.auth.getSession();
-  if (session) {
-    document.getElementById('startscreen').classList.remove('hidden');
-    document.querySelector('.container').classList.add('hidden');
-    loadFilterOptions();
-    await initSwipeInteressen();
-  }
-})();
-
-
 
 document.getElementById('showBestJobBtn').addEventListener('click', async () => {
     console.log("Button wurde geklickt!");
