@@ -107,17 +107,26 @@ function showNextInterest() {
 acceptBtn.addEventListener('click', () => handleChoice('zugestimmt'));
 rejectBtn.addEventListener('click', () => handleChoice('abgelehnt'));
 
-async function handleChoice(status) {
-  const interesseId = Number(curIcon.dataset.id);
-  const { error } = await supabase.from('user_interessen').upsert([
-    { user_id: currentUserId, interesse_id: interesseId, status }
-], { onConflict: ['user_id', 'interesse_id'] });
+async function handleChoice(status) {  
+    const interesseId = Number(curIcon.dataset.id);  
+    console.log("handleChoice wurde aufgerufen! Status:", status);  
 
-if (error) console.error("Fehler beim Speichern der Interessen:", error);
+    const { error } = await supabase.from('user_interessen').insert([{  
+        user_id: currentUserId,  
+        interesse_id: interesseId,  
+        status  
+    }]);  
 
-  swipeIdx += 1;
-  showNextInterest();
+    if (error) {  
+        console.error("Fehler beim Speichern der Interessen:", error);  
+        return;  
+    }  
+
+    console.log("Interesse erfolgreich gespeichert!");  
+    swipeIdx += 1;  
+    showNextInterest();  
 }
+
 
 /* ╔══════════════╗ Admin-Login ╚══════════════╝ */
 const adminCredentials = { username: 'admin', password: 'geheim123' };
