@@ -1,11 +1,3 @@
-/* ──────────────────────────────────────────────────────────
-   MakeMyFuture – Vollständiges script.js
-   - Supabase-Auth (Registrierung, Login)
-   - Admin-Panel zum Anlegen von Berufen + Icons
-   - Swipe-Flow für Interessen (ein Icon nach dem anderen)
-   - Filter-Funktion für passende Ausbildungsberufe
-   ────────────────────────────────────────────────────────── */
-
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
 const supabase = createClient(
@@ -13,7 +5,7 @@ const supabase = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlZGNpZ2VkaGprYXJrY2JxdnRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcyMjI3NjUsImV4cCI6MjA2Mjc5ODc2NX0.Q7By1dg4FFZrA6UPWYVGHJinydzltjlpW3riruZTPXA'
 );
 
-/* ╔════════════╗ Snackbar ╚════════════╝ */
+/* Snackbar */
 function showMessage(text, type = 'success') {
   const sb = document.getElementById('snackbar');
   sb.textContent = text;
@@ -21,27 +13,23 @@ function showMessage(text, type = 'success') {
   setTimeout(() => (sb.className = ''), 2600);
 }
 
-/* ╔═════════════════════╗ Registrierung / Login ╚═════════════════════╝ */
+/* Registrierung / Login */
 document.getElementById('registerBtn').addEventListener('click', async () => {
-  const email    = document.getElementById('registerEmail').value;
+  const email = document.getElementById('registerEmail').value;
   const password = document.getElementById('registerPassword').value;
-  const name     = document.getElementById('name').value;
+  const name = document.getElementById('name').value;
 
   const { error } = await supabase.auth.signUp({
     email,
     password,
-    options:{ data:{ name }, emailRedirectTo: window.location.href }
+    options: { data: { name }, emailRedirectTo: window.location.href }
   });
 
-  showMessage(
-    error ? 'Registrierung fehlgeschlagen: ' + error.message
-          : 'Registriert – bitte E-Mail bestätigen.',
-    error ? 'error' : 'success'
-  );
+  showMessage(error ? 'Registrierung fehlgeschlagen: ' + error.message : 'Registriert – bitte E-Mail bestätigen.', error ? 'error' : 'success');
 });
 
 document.getElementById('loginBtn').addEventListener('click', async () => {
-  const email    = document.getElementById('email').value;
+  const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
   const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -51,7 +39,8 @@ document.getElementById('loginBtn').addEventListener('click', async () => {
   setTimeout(async () => {
     document.getElementById('startscreen').classList.remove('hidden');
     document.querySelector('.container').classList.add('hidden');
-    loadFilterOptions();
+    await loadFilterOptions();
+    await markUserInteressen();
     await initSwipeInteressen();
   }, 600);
 });
@@ -61,26 +50,25 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
   location.reload();
 });
 
-/* ╔═══════════════════════════╗ Swipe-Interessen Variablen ╚═══════════════════════════╝ */
+/* Swipe */
 let swipeInteressen = [];
-let swipeIdx        = 0;
-let currentUserId   = null;
+let swipeIdx = 0;
+let currentUserId = null;
 
-const curIcon  = document.getElementById('currentInterest');
+const curIcon = document.getElementById('currentInterest');
 const curLabel = document.getElementById('currentInterestLabel');
 const acceptBtn = document.getElementById('acceptBtn');
 const rejectBtn = document.getElementById('rejectBtn');
 
-/* ╔═══════════════════════════╗ Swipe-Interessen Init ╚═══════════════════════════╝ */
 async function initSwipeInteressen() {
-  const { data:{ session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabase.auth.getSession();
   if (!session) return;
   currentUserId = session.user.id;
 
   const { data, error } = await supabase.from('interessen').select('*');
   if (error || !data?.length) {
     curLabel.textContent = 'Fehler beim Laden ❌';
-    curIcon.textContent  = '⚠️';
+    curIcon.textContent = '⚠️';
     acceptBtn.disabled = rejectBtn.disabled = true;
     return;
   }
@@ -89,21 +77,19 @@ async function initSwipeInteressen() {
   showNextInterest();
 }
 
-/* ╔══════════════════╗ Nächstes Icon ╚══════════════════╗ */
 function showNextInterest() {
   if (swipeIdx >= swipeInteressen.length) {
-    curIcon.textContent  = '🎉';
+    curIcon.textContent = '🎉';
     curLabel.textContent = 'Alle Interessen bewertet!';
     acceptBtn.style.display = rejectBtn.style.display = 'none';
     return;
   }
   const cur = swipeInteressen[swipeIdx];
-  curIcon.innerHTML  = cur.icon || '❓';
+  curIcon.innerHTML = cur.icon || '❓';
   curLabel.textContent = cur.name;
-  curIcon.dataset.id   = cur.id;
+  curIcon.dataset.id = cur.id;
 }
 
-/* ╔═══════════════════════╗ Like / Dislike ╚═══════════════════════╝ */
 acceptBtn.addEventListener('click', () => handleChoice('zugestimmt'));
 rejectBtn.addEventListener('click', () => handleChoice('abgelehnt'));
 
@@ -115,10 +101,10 @@ async function handleChoice(status) {
   );
   swipeIdx += 1;
   showNextInterest();
+  await markUserInteressen(); // aktualisiere Markierungen im UI
 }
 
-
-/* ╔══════════════╗ Admin-Login ╚══════════════╝ */
+/* Admin */
 const adminCredentials = { username: 'admin', password: 'geheim123' };
 
 document.getElementById('gotoAdminBtn').onclick = () => {
@@ -144,9 +130,10 @@ document.getElementById('adminLogoutBtn').onclick = () => {
   showMessage('Admin abgemeldet');
 };
 
-/* ╔══════════════════════╗ Icon-Grid Utilities ╚══════════════════════╝ */
+/* Icon-Grid */
 function fillIconGrid(containerId, items, labelFn = x => x.name, multiple = true) {
   const grid = document.getElementById(containerId);
+  if (!grid) return;
   grid.innerHTML = '';
   items.forEach(it => {
     const div = document.createElement('div');
@@ -164,7 +151,7 @@ function fillIconGrid(containerId, items, labelFn = x => x.name, multiple = true
       grid.querySelectorAll('.icon').forEach(i => i.classList.remove('selected'));
       el.classList.add('selected');
     }
-  }, { once: true });  // Listener nur einmal anhängen
+  }, { once: true });
 }
 
 function getSelectedMultipleIds(containerId) {
@@ -175,7 +162,7 @@ function getSelectedSingleId(containerId) {
   return el ? Number(el.dataset.id) : null;
 }
 
-/* ╔══════════════╗ Admin-Grids laden ╚══════════════╝ */
+/* Admin-Grids */
 async function loadAdminIconGrids() {
   const [abschluesse, interessen, faecher] = await Promise.all([
     supabase.from('abschluesse').select('*').then(r => r.data || []),
@@ -187,17 +174,17 @@ async function loadAdminIconGrids() {
   fillIconGrid('faecherIconsAdmin', faecher);
 }
 
-/* ╔══════════════╗ Admin: Beruf speichern ╚══════════════╝ */
+/* Admin: Beruf speichern */
 document.getElementById('addBerufBtn').addEventListener('click', async () => {
   const berufsbezeichnung = document.getElementById('berufsbezeichnung').value;
-  const beschreibung      = document.getElementById('beschreibung').value;
-  const anforderungen     = document.getElementById('anforderungen').value;
-  const verdienst         = parseInt(document.getElementById('verdienst').value);
-  const einsatzorte       = document.getElementById('einsatzorte').value;
+  const beschreibung = document.getElementById('beschreibung').value;
+  const anforderungen = document.getElementById('anforderungen').value;
+  const verdienst = parseInt(document.getElementById('verdienst').value);
+  const einsatzorte = document.getElementById('einsatzorte').value;
 
-  const abschluss_id   = getSelectedSingleId('abschlussIconsAdmin');
+  const abschluss_id = getSelectedSingleId('abschlussIconsAdmin');
   const interessen_ids = getSelectedMultipleIds('interessenIconsAdmin');
-  const faecher_ids    = getSelectedMultipleIds('faecherIconsAdmin');
+  const faecher_ids = getSelectedMultipleIds('faecherIconsAdmin');
 
   if (!beschreibung || !abschluss_id) {
     showMessage('Bitte mindestens Beschreibung und Abschluss wählen', 'error');
@@ -222,7 +209,26 @@ document.getElementById('addBerufBtn').addEventListener('click', async () => {
   }
 });
 
-/* ╔══════════════╗ Filter-Optionen laden ╚══════════════╝ */
+/* Interessen für Benutzer markieren */
+async function markUserInteressen() {
+  const { data: sessionData } = await supabase.auth.getSession();
+  const userId = sessionData?.session?.user?.id;
+  if (!userId) return;
+
+  const { data: userPrefs } = await supabase
+    .from('user_interessen')
+    .select('interessen_id')
+    .eq('user_id', userId)
+    .eq('status', 'zugestimmt');
+
+  const ids = userPrefs?.map(row => row.interessen_id) || [];
+  document.querySelectorAll('#interessenIcons .icon').forEach(icon => {
+    const id = Number(icon.dataset.id);
+    if (ids.includes(id)) icon.classList.add('selected');
+  });
+}
+
+/* Filter */
 async function loadFilterOptions() {
   const [interessen, abschluesse, faecher] = await Promise.all([
     supabase.from('interessen').select('*').then(r => r.data || []),
@@ -234,16 +240,29 @@ async function loadFilterOptions() {
   fillIconGrid('faecherIcons', faecher);
 }
 
-/* ╔══════════════╗ Filter anwenden ╚══════════════╝ */
 document.getElementById('filterBtn').addEventListener('click', async () => {
-  const interessenIds = getSelectedMultipleIds('interessenIcons');
-  const abschlussId   = getSelectedSingleId('abschlussIcons');
-  const faecherIds    = getSelectedMultipleIds('faecherIcons');
+  let interessenIds = getSelectedMultipleIds('interessenIcons');
+
+  if (interessenIds.length === 0) {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const userId = sessionData?.session?.user?.id;
+    if (userId) {
+      const { data: userPrefs } = await supabase
+        .from('user_interessen')
+        .select('interessen_id')
+        .eq('user_id', userId)
+        .eq('status', 'zugestimmt');
+      interessenIds = userPrefs?.map(row => row.interessen_id) || [];
+    }
+  }
+
+  const abschlussId = getSelectedSingleId('abschlussIcons');
+  const faecherIds = getSelectedMultipleIds('faecherIcons');
 
   let query = supabase.from('ausbildungsberufe').select(`
-      id, berufsbezeichnung, beschreibung, verdienst, einsatzorte, anforderungen,
-      abschluesse(name), interessen_ids, faecher_ids
-    `);
+    id, berufsbezeichnung, beschreibung, verdienst, einsatzorte, anforderungen,
+    abschluesse(name), interessen_ids, faecher_ids
+  `);
   if (interessenIds.length) query = query.overlaps('interessen_ids', interessenIds);
   if (faecherIds.length)     query = query.overlaps('faecher_ids', faecherIds);
   if (abschlussId)           query = query.eq('abschluss_id', abschlussId);
@@ -268,13 +287,14 @@ document.getElementById('filterBtn').addEventListener('click', async () => {
     : '<p>Keine passenden Berufe gefunden.</p>';
 });
 
-/* ╔══════════════╗ Auto-Login ╚══════════════╝ */
+/* Auto-Login */
 (async () => {
-  const { data:{ session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabase.auth.getSession();
   if (session) {
     document.getElementById('startscreen').classList.remove('hidden');
     document.querySelector('.container').classList.add('hidden');
-    loadFilterOptions();
+    await loadFilterOptions();
+    await markUserInteressen();
     await initSwipeInteressen();
   }
 })();
