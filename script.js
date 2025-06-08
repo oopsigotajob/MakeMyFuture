@@ -110,12 +110,13 @@ rejectBtn.addEventListener('click', () => handleChoice('abgelehnt'));
 async function handleChoice(status) {
   const interesseId = Number(curIcon.dataset.id);
   await supabase.from('user_interessen').upsert(
-    { user_id: currentUserId, interesse_id: interesseId, status },
-    { onConflict: ['user_id', 'interesse_id'] }
+    { user_id: currentUserId, interessen_id: interesseId, status },
+    { onConflict: ['user_id', 'interessen_id'] }
   );
   swipeIdx += 1;
   showNextInterest();
 }
+
 
 /* ╔══════════════╗ Admin-Login ╚══════════════╝ */
 const adminCredentials = { username: 'admin', password: 'geheim123' };
