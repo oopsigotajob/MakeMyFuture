@@ -40,7 +40,6 @@
 
     <h2>Wähle deine Interessen per Swipe</h2>
     <div id="swipeInterestContainer" style="margin: 20px auto; max-width: 300px; position: relative; min-height: 150px; border: 1px solid #ccc; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-      <!-- Aktuelles Icon + Text -->
       <div id="currentInterest" class="icon swipe-icon" style="font-size: 5rem; user-select: none;">❓</div>
       <div id="currentInterestLabel" style="font-size: 1.2rem; margin-top: 10px; font-weight: bold;">Lade...</div>
 
@@ -51,6 +50,16 @@
     </div>
 
     <button id="filterBtn" style="margin-top: 30px;">Passende Ausbildungsberufe anzeigen</button>
+
+    <h3>Deine Interessen</h3>
+    <div id="interessenIcons" class="icon-grid"></div>
+
+    <h3>Schulabschluss</h3>
+    <div id="abschlussIcons" class="icon-grid"></div>
+
+    <h3>Fächer</h3>
+    <div id="faecherIcons" class="icon-grid"></div>
+
     <div id="resultList" style="margin-top: 20px;"></div>
   </div>
 
@@ -62,7 +71,7 @@
     <button id="adminLoginBtn">Login als Admin</button>
   </div>
 
-  <!-- === Admin Panel mit Icons statt Checkboxen === -->
+  <!-- === Admin Panel === -->
   <div id="adminPanel" class="container hidden">
     <h2>Ausbildungsberuf hinzufügen</h2>
     <input type="text" id="berufsbezeichnung" placeholder="Berufsbezeichnung" />
@@ -76,6 +85,9 @@
 
     <h3>Interessensgebiete (mehrere möglich)</h3>
     <div id="interessenIconsAdmin" class="icon-grid"></div>
+
+    <h3>Fächer (mehrere möglich)</h3>
+    <div id="faecherIconsAdmin" class="icon-grid"></div>
 
     <button id="addBerufBtn">Speichern</button>
     <button id="adminLogoutBtn">Abmelden</button>
