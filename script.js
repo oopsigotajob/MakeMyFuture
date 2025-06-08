@@ -12,13 +12,126 @@ function showMessage(text, type = 'success') {
   setTimeout(() => (sb.className = ''), 2600);
 }
 
-/* Registrierung / Login */
-...
+/* Registrierung & Login */
+document.getElementById('registerBtn').addEventListener('click', async () => {
+  const email = document.getElementById('registerEmail').value;
+  const password = document.getElementById('registerPassword').value;
+  const name = document.getElementById('name').value;
 
-/* Swipe */
-...
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { name }, emailRedirectTo: window.location.href }
+  });
 
-/* Icon-Grids mit automatischem Filter-Update */
+  showMessage(error ? 'Registrierung fehlgeschlagen: ' + error.message : 'Registriert – bitte E-Mail bestätigen.', error ? 'error' : 'success');
+});
+
+document.getElementById('loginBtn').addEventListener('click', async () => {
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) return showMessage('Login fehlgeschlagen: ' + error.message, 'error');
+
+  showMessage('Login erfolgreich!');
+  setTimeout(async () => {
+    document.getElementById('startscreen').classList.remove('hidden');
+    document.querySelector('.container').classList.add('hidden');
+    await loadFilterOptions();
+    await markUserInteressen();
+    await initSwipeInteressen();
+    await applyFilter();
+  }, 600);
+});
+
+document.getElementById('logoutBtn').addEventListener('click', async () => {
+  await supabase.auth.signOut();
+  location.reload();
+});
+
+/* Swipe-Interessen */
+let swipeInteressen = [];
+let swipeIdx = 0;
+let currentUserId = null;
+
+const curIcon = document.getElementById('currentInterest');
+const curLabel = document.getElementById('currentInterestLabel');
+const acceptBtn = document.getElementById('acceptBtn');
+const rejectBtn = document.getElementById('rejectBtn');
+
+async function initSwipeInteressen() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) return;
+  currentUserId = session.user.id;
+
+  const { data, error } = await supabase.from('interessen').select('*');
+  if (error || !data?.length) {
+    curLabel.textContent = 'Fehler beim Laden ❌';
+    curIcon.textContent = '⚠️';
+    acceptBtn.disabled = rejectBtn.disabled = true;
+    return;
+  }
+  swipeInteressen = data;
+  swipeIdx = 0;
+  showNextInterest();
+}
+
+function showNextInterest() {
+  if (swipeIdx >= swipeInteressen.length) {
+    curIcon.textContent = '🎉';
+    curLabel.textContent = 'Alle Interessen bewertet!';
+    acceptBtn.style.display = rejectBtn.style.display = 'none';
+    return;
+  }
+  const cur = swipeInteressen[swipeIdx];
+  curIcon.innerHTML = cur.icon || '❓';
+  curLabel.textContent = cur.name;
+  curIcon.dataset.id = cur.id;
+}
+
+acceptBtn.addEventListener('click', () => handleChoice('zugestimmt'));
+rejectBtn.addEventListener('click', () => handleChoice('abgelehnt'));
+
+async function handleChoice(status) {
+  const interesseId = Number(curIcon.dataset.id);
+  await supabase.from('user_interessen').upsert(
+    { user_id: currentUserId, interessen_id: interesseId, status },
+    { onConflict: ['user_id', 'interessen_id'] }
+  );
+  swipeIdx += 1;
+  showNextInterest();
+  await markUserInteressen();
+  await applyFilter();
+}
+
+/* Admin Login */
+const adminCredentials = { username: 'admin', password: 'geheim123' };
+
+document.getElementById('gotoAdminBtn').onclick = () => {
+  document.getElementById('startscreen').classList.add('hidden');
+  document.getElementById('adminLoginSection').classList.remove('hidden');
+};
+
+document.getElementById('adminLoginBtn').onclick = () => {
+  const u = document.getElementById('adminUser').value;
+  const p = document.getElementById('adminPass').value;
+  if (u === adminCredentials.username && p === adminCredentials.password) {
+    document.getElementById('adminLoginSection').classList.add('hidden');
+    document.getElementById('adminPanel').classList.remove('hidden');
+    showMessage('Admin eingeloggt');
+    loadAdminIconGrids();
+  } else showMessage('Falsche Admin-Daten', 'error');
+};
+
+document.getElementById('adminLogoutBtn').onclick = () => {
+  document.getElementById('adminPanel').classList.add('hidden');
+  document.getElementById('adminLoginSection').classList.add('hidden');
+  document.querySelector('.container').classList.remove('hidden');
+  showMessage('Admin abgemeldet');
+};
+
+/* Icon-Grid mit Live-Filter */
 function fillIconGrid(containerId, items, labelFn = x => x.name, multiple = true) {
   const grid = document.getElementById(containerId);
   if (!grid) return;
@@ -54,7 +167,7 @@ function fillIconGrid(containerId, items, labelFn = x => x.name, multiple = true
       el.classList.add('selected');
     }
 
-    await applyFilter();
+    await applyFilter(); // automatisch neu filtern
   };
 }
 
@@ -66,6 +179,84 @@ function getSelectedSingleId(containerId) {
   return el ? Number(el.dataset.id) : null;
 }
 
+async function markUserInteressen() {
+  const { data: sessionData } = await supabase.auth.getSession();
+  const userId = sessionData?.session?.user?.id;
+  if (!userId) return;
+
+  const { data: userPrefs } = await supabase
+    .from('user_interessen')
+    .select('interessen_id')
+    .eq('user_id', userId)
+    .eq('status', 'zugestimmt');
+
+  const ids = userPrefs?.map(row => row.interessen_id) || [];
+  document.querySelectorAll('#interessenIcons .icon').forEach(icon => {
+    const id = Number(icon.dataset.id);
+    if (ids.includes(id)) icon.classList.add('selected');
+  });
+}
+
+/* Admin-Grids */
+async function loadAdminIconGrids() {
+  const [abschluesse, interessen, faecher] = await Promise.all([
+    supabase.from('abschluesse').select('*').then(r => r.data || []),
+    supabase.from('interessen').select('*').then(r => r.data || []),
+    supabase.from('faecher').select('*').then(r => r.data || [])
+  ]);
+  fillIconGrid('abschlussIconsAdmin', abschluesse, x => x.name, false);
+  fillIconGrid('interessenIconsAdmin', interessen);
+  fillIconGrid('faecherIconsAdmin', faecher);
+}
+
+document.getElementById('addBerufBtn').addEventListener('click', async () => {
+  const berufsbezeichnung = document.getElementById('berufsbezeichnung').value;
+  const beschreibung = document.getElementById('beschreibung').value;
+  const anforderungen = document.getElementById('anforderungen').value;
+  const verdienst = parseInt(document.getElementById('verdienst').value);
+  const einsatzorte = document.getElementById('einsatzorte').value;
+
+  const abschluss_id = getSelectedSingleId('abschlussIconsAdmin');
+  const interessen_ids = getSelectedMultipleIds('interessenIconsAdmin');
+  const faecher_ids = getSelectedMultipleIds('faecherIconsAdmin');
+
+  if (!beschreibung || !abschluss_id) {
+    showMessage('Bitte mindestens Beschreibung und Abschluss wählen', 'error');
+    return;
+  }
+
+  const { error } = await supabase.from('ausbildungsberufe').insert({
+    berufsbezeichnung,
+    beschreibung,
+    anforderungen,
+    verdienst,
+    einsatzorte,
+    abschluss_id,
+    interessen_ids,
+    faecher_ids
+  });
+
+  if (error) showMessage('Fehler: ' + error.message, 'error');
+  else {
+    showMessage('Beruf gespeichert');
+    document.querySelectorAll('#adminPanel input, #adminPanel textarea').forEach(el => (el.value = ''));
+    document.querySelectorAll('#adminPanel .icon.selected').forEach(el => el.classList.remove('selected'));
+  }
+});
+
+/* Filter laden */
+async function loadFilterOptions() {
+  const [interessen, abschluesse, faecher] = await Promise.all([
+    supabase.from('interessen').select('*').then(r => r.data || []),
+    supabase.from('abschluesse').select('*').then(r => r.data || []),
+    supabase.from('faecher').select('*').then(r => r.data || [])
+  ]);
+  fillIconGrid('interessenIcons', interessen);
+  fillIconGrid('abschlussIcons', abschluesse, x => x.name, false);
+  fillIconGrid('faecherIcons', faecher);
+}
+
+/* Automatische Filter-Funktion */
 async function applyFilter() {
   let interessenIds = getSelectedMultipleIds('interessenIcons');
 
@@ -122,7 +313,7 @@ async function applyFilter() {
     : '<p>Keine passenden Berufe gefunden.</p>';
 }
 
-/* Auto-Login */
+/* Auto-Login bei Seite laden */
 (async () => {
   const { data: { session } } = await supabase.auth.getSession();
   if (session) {
