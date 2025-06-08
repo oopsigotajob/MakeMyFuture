@@ -151,7 +151,7 @@ function fillIconGrid(containerId, items, labelFn = x => x.name, multiple = true
       grid.querySelectorAll('.icon').forEach(i => i.classList.remove('selected'));
       el.classList.add('selected');
     }
-  }, { once: true });
+  });
 }
 
 function getSelectedMultipleIds(containerId) {
