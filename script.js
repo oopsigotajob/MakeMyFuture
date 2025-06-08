@@ -277,9 +277,18 @@ document.getElementById('filterBtn').addEventListener('click', async () => {
     id, berufsbezeichnung, beschreibung, verdienst, einsatzorte, anforderungen,
     abschluesse(name), interessen_ids, faecher_ids
   `);
+
   if (interessenIds.length) query = query.overlaps('interessen_ids', interessenIds);
   if (faecherIds.length)     query = query.overlaps('faecher_ids', faecherIds);
-  if (abschlussId)           query = query.eq('abschluss_id', abschlussId);
+
+  if (abschlussId) {
+    const { data: erlaubteAbschluesse } = await supabase
+      .from('abschluesse')
+      .select('id')
+      .lte('id', abschlussId);
+    const ids = erlaubteAbschluesse?.map(a => a.id) || [];
+    query = query.in('abschluss_id', ids);
+  }
 
   const { data, error } = await query;
   const out = document.getElementById('resultList');
