@@ -101,7 +101,7 @@ async function handleChoice(status) {
   );
   swipeIdx += 1;
   showNextInterest();
-  await markUserInteressen(); // aktualisiere Markierungen im UI
+  await markUserInteressen();
 }
 
 /* Admin */
@@ -130,7 +130,7 @@ document.getElementById('adminLogoutBtn').onclick = () => {
   showMessage('Admin abgemeldet');
 };
 
-/* Icon-Grid */
+/* Icon-Grids */
 function fillIconGrid(containerId, items, labelFn = x => x.name, multiple = true) {
   const grid = document.getElementById(containerId);
   if (!grid) return;
@@ -142,16 +142,31 @@ function fillIconGrid(containerId, items, labelFn = x => x.name, multiple = true
     div.innerHTML = `${it.icon || '❓'}<br><span>${labelFn(it)}</span>`;
     grid.appendChild(div);
   });
-  grid.addEventListener('click', e => {
+
+  grid.onclick = async (e) => {
     const el = e.target.closest('.icon');
     if (!el) return;
+
+    const id = Number(el.dataset.id);
+    const { data: sessionData } = await supabase.auth.getSession();
+    const userId = sessionData?.session?.user?.id;
+    if (!userId) return;
+
     if (multiple) {
-      el.classList.toggle('selected');
+      const isSelected = el.classList.toggle('selected');
+
+      await supabase.from('user_interessen').upsert({
+        user_id: userId,
+        interessen_id: id,
+        status: isSelected ? 'zugestimmt' : 'abgelehnt'
+      }, {
+        onConflict: ['user_id', 'interessen_id']
+      });
     } else {
       grid.querySelectorAll('.icon').forEach(i => i.classList.remove('selected'));
       el.classList.add('selected');
     }
-  });
+  };
 }
 
 function getSelectedMultipleIds(containerId) {
@@ -162,7 +177,25 @@ function getSelectedSingleId(containerId) {
   return el ? Number(el.dataset.id) : null;
 }
 
-/* Admin-Grids */
+async function markUserInteressen() {
+  const { data: sessionData } = await supabase.auth.getSession();
+  const userId = sessionData?.session?.user?.id;
+  if (!userId) return;
+
+  const { data: userPrefs } = await supabase
+    .from('user_interessen')
+    .select('interessen_id')
+    .eq('user_id', userId)
+    .eq('status', 'zugestimmt');
+
+  const ids = userPrefs?.map(row => row.interessen_id) || [];
+  document.querySelectorAll('#interessenIcons .icon').forEach(icon => {
+    const id = Number(icon.dataset.id);
+    if (ids.includes(id)) icon.classList.add('selected');
+  });
+}
+
+/* Admin Grids */
 async function loadAdminIconGrids() {
   const [abschluesse, interessen, faecher] = await Promise.all([
     supabase.from('abschluesse').select('*').then(r => r.data || []),
@@ -174,7 +207,7 @@ async function loadAdminIconGrids() {
   fillIconGrid('faecherIconsAdmin', faecher);
 }
 
-/* Admin: Beruf speichern */
+/* Beruf speichern */
 document.getElementById('addBerufBtn').addEventListener('click', async () => {
   const berufsbezeichnung = document.getElementById('berufsbezeichnung').value;
   const beschreibung = document.getElementById('beschreibung').value;
@@ -209,26 +242,7 @@ document.getElementById('addBerufBtn').addEventListener('click', async () => {
   }
 });
 
-/* Interessen für Benutzer markieren */
-async function markUserInteressen() {
-  const { data: sessionData } = await supabase.auth.getSession();
-  const userId = sessionData?.session?.user?.id;
-  if (!userId) return;
-
-  const { data: userPrefs } = await supabase
-    .from('user_interessen')
-    .select('interessen_id')
-    .eq('user_id', userId)
-    .eq('status', 'zugestimmt');
-
-  const ids = userPrefs?.map(row => row.interessen_id) || [];
-  document.querySelectorAll('#interessenIcons .icon').forEach(icon => {
-    const id = Number(icon.dataset.id);
-    if (ids.includes(id)) icon.classList.add('selected');
-  });
-}
-
-/* Filter */
+/* Filter laden */
 async function loadFilterOptions() {
   const [interessen, abschluesse, faecher] = await Promise.all([
     supabase.from('interessen').select('*').then(r => r.data || []),
